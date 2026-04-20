@@ -483,7 +483,8 @@
   // ── Protein plans ─────────────────────────────────────────────────────────
   // Keyed by JS getDay() 0=Sun 1=Mon … 6=Sat
   const PROTEIN_PLANS = {
-    1: { type: 'Gym morning', target: 240, meals: [
+    1: { type: 'Gym morning', target: 255, meals: [
+      { id: 'm0', time: '7:30',  label: 'Pre-gym snack', detail: 'Skyr 150g + banana', protein: 15 },
       { id: 'm1', time: '10:35', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
       { id: 'm2', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
       { id: 'm3', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
@@ -500,7 +501,8 @@
       { id: 't6', time: '19:00', label: 'Dinner', detail: 'Shakshuka — 4 eggs + tomato + 150g cottage', protein: 50 },
       { id: 't7', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
     ]},
-    3: { type: 'Gym morning', target: 235, meals: [
+    3: { type: 'Gym morning', target: 250, meals: [
+      { id: 'w0', time: '7:30',  label: 'Pre-gym snack', detail: 'Skyr 150g + banana', protein: 15 },
       { id: 'w1', time: '10:35', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
       { id: 'w2', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
       { id: 'w3', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Lentil Bowl (1 can tuna + 100g rice + 200g lentils + 100g cottage)', protein: 55 },
@@ -508,7 +510,8 @@
       { id: 'w5', time: '19:00', label: 'Dinner', detail: 'Chickpea curry — 2 cans chickpeas + coconut milk + 200g Skyr', protein: 50 },
       { id: 'w6', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
     ]},
-    4: { type: 'Gym morning', target: 240, meals: [
+    4: { type: 'Gym morning', target: 255, meals: [
+      { id: 'th0', time: '7:30',  label: 'Pre-gym snack', detail: 'Skyr 150g + banana', protein: 15 },
       { id: 'th1', time: '10:35', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
       { id: 'th2', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
       { id: 'th3', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
@@ -1382,6 +1385,79 @@
   function saveProteinChecked(dateKey, arr) { saveJSON(`protein_v1:${dateKey}`, arr); }
   function loadProteinNotes(dateKey) { return loadJSON(`protein_notes_v1:${dateKey}`, {}); }
   function saveProteinNotes(dateKey, obj) { saveJSON(`protein_notes_v1:${dateKey}`, obj); }
+  function loadDietHistory()    { return loadJSON('diet_history_v1', []) || []; }
+  function saveDietHistory(h)   { saveJSON('diet_history_v1', h); }
+  function logDietDay(dateKey, plan, checked, notes) {
+    const getProtein = (m) => (checked.includes(m.id) && notes[m.id]) ? notes[m.id].protein : m.protein;
+    const eaten = plan.meals.filter(m => checked.includes(m.id)).reduce((s, m) => s + getProtein(m), 0);
+    const snap = {
+      id: `diet_${dateKey}`,
+      date: dateKey,
+      type: plan.type,
+      target: plan.target,
+      eaten,
+      meals: plan.meals.map(m => ({
+        id: m.id, label: m.label, time: m.time,
+        planned: m.protein,
+        checked: checked.includes(m.id),
+        note: notes[m.id] || null,
+      }))
+    };
+    const history = loadDietHistory();
+    const idx = history.findIndex(h => h.id === snap.id);
+    if (idx >= 0) history[idx] = snap; else history.push(snap);
+    saveDietHistory(history);
+  }
+  function renderDietHistorySection() {
+    const history = loadDietHistory();
+    if (history.length === 0) return `<div style="text-align:center;color:var(--muted);font-size:12px;padding:16px 0">No days logged yet.</div>`;
+    const byMonth = {};
+    history.slice().reverse().forEach(s => {
+      const key = fmtMonthKey(s.date);
+      if (!byMonth[key]) byMonth[key] = [];
+      byMonth[key].push(s);
+    });
+    let html = '';
+    Object.entries(byMonth).forEach(([month, entries], idx) => {
+      html += `<div class="history-month ${idx===0?'open':''}" data-diet-month="${month}">
+        <div class="history-month-header">
+          <div class="history-month-title">${month}</div>
+          <div class="history-month-count">${entries.length} day${entries.length!==1?'s':''}</div>
+        </div>
+        <div class="history-month-body">`;
+      entries.forEach(e => {
+        const pct  = Math.min(100, Math.round(e.eaten / e.target * 100));
+        const over = e.eaten >= e.target;
+        const mealRows = e.meals.map(m => {
+          const prot = m.note ? m.note.protein : m.planned;
+          const note = m.note ? m.note.text : null;
+          return `<div style="display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid var(--border);opacity:${m.checked?1:0.4}">
+            <div>
+              <span style="font-size:12px;font-weight:${m.checked?700:400};color:${m.checked?'var(--text)':'var(--muted)'}">${m.label}</span>
+              ${note ? `<div style="font-size:10px;color:var(--accent-dim);font-style:italic;margin-top:1px">${note}</div>` : ''}
+            </div>
+            <span style="font-family:'SF Mono',ui-monospace,monospace;font-size:12px;font-weight:700;color:${m.checked?(m.note?'var(--accent)':'var(--done)'):'var(--muted)'}">${m.checked?'+'+prot+'g':'—'}</span>
+          </div>`;
+        }).join('');
+        html += `<div class="history-session" data-diet-session-id="${e.id}">
+          <div class="history-session-header">
+            <div class="history-session-day">${fmtDateFull(e.date)}</div>
+            <div class="history-session-meta">
+              <span style="font-family:'SF Mono',ui-monospace,monospace;font-size:11px;font-weight:700;color:${over?'var(--done)':'var(--muted)'}">${e.eaten}g / ${e.target}g</span>
+              <button class="diet-session-delete-btn" data-diet-id="${e.id}" style="background:transparent;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1;margin-left:4px">×</button>
+            </div>
+          </div>
+          <div class="history-session-summary">${e.type} · ${pct}%${over?' ✓':''}</div>
+          <div style="height:4px;background:var(--border);border-radius:2px;margin:6px 0;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:${over?'var(--done)':'var(--accent-dim)'};border-radius:2px;transition:width 0.3s"></div>
+          </div>
+          <div class="history-session-details">${mealRows}</div>
+        </div>`;
+      });
+      html += '</div></div>';
+    });
+    return html;
+  }
 
   // ── Smart protein parser ──────────────────────────────────────────────────
   // Recognises: "45g protein", "ate 40g prot", "chicken 200g + 2 eggs", etc.
@@ -1533,6 +1609,7 @@
       const pct    = Math.min(100, Math.round(eaten / plan.target * 100));
       const over   = eaten >= plan.target;
 
+      const historyHTML = renderDietHistorySection();
       root.innerHTML = `
         <div class="protein-header">
           <div class="protein-title">${plan.type} · Target: ${plan.target}g</div>
@@ -1559,6 +1636,13 @@
             </div>
           </div>`;
         }).join('')}
+        <div style="margin-top:8px">
+          <button class="btn-action primary" id="logDietDayBtn" style="width:100%">Log day</button>
+        </div>
+        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px">Diet log</div>
+          ${historyHTML}
+        </div>
       `;
 
       // Tap card body → toggle checked
@@ -1597,11 +1681,49 @@
           });
         });
       });
+
+      // Log day button
+      const logBtn = root.querySelector('#logDietDayBtn');
+      if (logBtn) {
+        logBtn.addEventListener('click', () => {
+          const latestChecked = loadProteinChecked(dateKey);
+          const latestNotes   = loadProteinNotes(dateKey);
+          logDietDay(dateKey, plan, latestChecked, latestNotes);
+          haptic();
+          toast('Day logged ✓');
+          rerender();
+        });
+      }
+
+      // Diet history — month headers toggle
+      root.querySelectorAll('[data-diet-month]').forEach(el => {
+        el.querySelector('.history-month-header').addEventListener('click', () => el.classList.toggle('open'));
+      });
+      // Diet history — session expand
+      root.querySelectorAll('[data-diet-session-id]').forEach(el => {
+        el.addEventListener('click', e => {
+          if (e.target.closest('.diet-session-delete-btn')) return;
+          el.classList.toggle('open');
+        });
+      });
+      // Diet history — delete
+      root.querySelectorAll('.diet-session-delete-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          confirmModal('Delete entry', 'Remove this day from the diet log?', () => {
+            const id = btn.dataset.dietId;
+            const h  = loadDietHistory().filter(x => x.id !== id);
+            saveDietHistory(h);
+            rerender();
+            toast('Entry deleted');
+          });
+        });
+      });
     };
     rerender();
   }
 
-  // ── Midnight date refresh ────────────────────────────────────────────────
+  // ── Midnight date refresh ─────────────────────────────────────────────────
   function scheduleMidnightRefresh() {
     const now = new Date();
     const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
