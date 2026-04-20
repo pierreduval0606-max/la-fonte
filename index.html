@@ -290,7 +290,8 @@
   })();
 </script>
 
-<script type="module">
+<script>
+(function() {
   const DEFAULT_SETS = 4;
   const MAX_PILLS    = 5;   // above this, show "done/total" text instead of dots
 
@@ -1277,7 +1278,9 @@
   session = loadSession(currentDay);
   if (session._startedAt) startChrono();
   renderTrainingDay();
+})();
 </script>
 
 </body>
 </html>
+
