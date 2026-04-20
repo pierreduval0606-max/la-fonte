@@ -57,19 +57,48 @@
     .chrono.active { display: block; }
 
     .day-tabs {
-      display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 20px;
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; margin-bottom: 20px;
       background: var(--surface); padding: 4px; border-radius: 14px; border: 1px solid var(--border);
       position: sticky; top: var(--safe-top); z-index: 50;
     }
-    .day-tab { padding: 14px 2px; border: none; background: transparent; color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 10px; cursor: pointer; transition: all 0.15s; font-family: inherit; min-height: 48px; }
+    .day-tab { padding: 14px 2px; border: none; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border-radius: 10px; cursor: pointer; transition: all 0.15s; font-family: inherit; min-height: 48px; }
     .day-tab.active { background: var(--accent); color: #000; }
     .day-tab.history-tab.active { background: var(--bonus); color: #000; }
+    .day-tab.protein-tab.active { background: var(--done); color: #000; }
 
     .session-banner { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
     .session-banner-left { flex: 1; min-width: 0; }
     .session-banner .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .session-banner .progress { font-family: 'SF Mono', ui-monospace, monospace; font-size: 16px; font-weight: 700; }
     .session-banner .progress .done-count { color: var(--accent); }
+    .session-banner .progress .pct { font-size: 11px; color: var(--muted); font-weight: 600; margin-left: 6px; }
+    .rest-chrono { font-size: 10px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; letter-spacing: 0.1em; margin-top: 3px; min-height: 14px; }
+    .rest-chrono.active { color: var(--accent-dim); }
+
+    /* Protein tracker */
+    .protein-header { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+    .protein-title { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 6px; }
+    .protein-progress { font-family: 'SF Mono', ui-monospace, monospace; font-size: 22px; font-weight: 800; }
+    .protein-progress .prot-done { color: var(--done); }
+    .protein-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+    .protein-bar { height: 100%; background: var(--done); border-radius: 3px; transition: width 0.3s; }
+    .protein-bar.over { background: var(--accent); }
+    .meal-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all 0.15s; }
+    .meal-card.checked { border-color: var(--done); background: rgba(34,197,94,0.06); }
+    .meal-check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; font-weight: 800; transition: all 0.15s; }
+    .meal-card.checked .meal-check { background: var(--done); border-color: var(--done); color: #000; }
+    .meal-info { flex: 1; min-width: 0; }
+    .meal-time { font-size: 10px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; letter-spacing: 0.1em; }
+    .meal-name { font-size: 14px; font-weight: 700; margin: 2px 0; }
+    .meal-detail { font-size: 11px; color: var(--muted); line-height: 1.4; }
+    .meal-prot { font-family: 'SF Mono', ui-monospace, monospace; font-size: 15px; font-weight: 800; color: var(--done); flex-shrink: 0; }
+    .meal-card.checked .meal-prot { opacity: 0.5; }
+    .meal-prot.overridden { color: var(--accent); opacity: 1 !important; }
+    .meal-override-note { font-size: 10px; color: var(--accent-dim); margin-top: 3px; font-style: italic; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+    .meal-edit-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); width: 30px; height: 30px; border-radius: 8px; font-size: 13px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: inherit; transition: all 0.15s; margin-left: 4px; }
+    .meal-edit-btn:active { background: var(--surface-2); color: var(--accent); border-color: var(--accent); transform: scale(0.94); }
+    .meal-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+    .meal-prot-planned { font-family: 'SF Mono', ui-monospace, monospace; font-size: 10px; color: var(--muted); text-decoration: line-through; }
 
     .btn-finish { background: var(--accent); border: 1px solid var(--accent); color: #000; padding: 12px 16px; border-radius: 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; font-family: inherit; font-weight: 800; min-height: 48px; white-space: nowrap; flex-shrink: 0; }
     .btn-finish:active { transform: scale(0.96); opacity: 0.85; }
@@ -258,6 +287,7 @@
     <button class="day-tab" data-day="legB">Leg B</button>
     <button class="day-tab" data-day="back">Back</button>
     <button class="day-tab history-tab" data-day="history">Log</button>
+    <button class="day-tab protein-tab" data-day="protein">Diet</button>
   </div>
   <div id="mainContent"></div>
 </div>
@@ -302,6 +332,7 @@
     { id: 'chest_fly',     name: 'Chest fly (cable pulley)',      group: 'upper', weight: 28.75, targetReps: '12-15', note: 'Per side. Focus on the stretch at the bottom and full squeeze at the top.' },
     { id: 'leg_press_bi',  name: 'Leg press (both legs)',         group: 'legs',  weight: 107.5, targetReps: '8-10',  note: 'Heavy compound. Push through the heels, keep knees tracking over toes.' },
     { id: 'leg_press_uni', name: 'Leg press (single leg)',        group: 'legs',  weight: 65,    targetReps: '8-10',  unilateral: true, note: 'Per leg. Start with the left (weaker) side. Match reps on right, do not exceed.' },
+    { id: 'hip_thrust',    name: 'Hip thrust (barbell)',          group: 'legs',  weight: 60,    targetReps: '8-12',  note: 'Upper back on pad, feet flat, knees at 90° at the top. Drive hips up, squeeze glutes hard at the top, pause 1 second. Control the descent. Keep ribs down — slight abdominal brace, do not hyperextend the lower back. You should feel it entirely in the glutes at the top with zero back sensation.' },
     { id: 'rdl',           name: 'Romanian deadlift (dumbbells)', group: 'legs',  weight: 20,    targetReps: '10-12', note: 'Hinge at the hips, push the hips back. Slight knee bend, not a squat. Start light until form is dialled in.' },
     { id: 'leg_ext',       name: 'Leg extension (single leg)',    group: 'legs',  weight: 42.5,  targetReps: '10-12', unilateral: true, note: 'Per leg. Start with left side, match reps on right.' },
     { id: 'leg_curl',      name: 'Seated leg curl',               group: 'legs',  weight: 50,    targetReps: '10-12', note: 'Hamstring isolation. Full range of motion, control the return.' },
@@ -319,10 +350,10 @@
   const DEFAULT_DAY = {
     upper: ['chest_incline', 'dips', 'shoulders', 'chest_fly', 'leg_raise', 'pallof'],
     legA:  ['leg_press_bi', 'leg_ext', 'leg_curl', 'calf', 'biceps', 'leg_raise', 'pallof'],
-    legB:  ['rdl', 'leg_press_uni', 'leg_curl', 'leg_ext', 'calf', 'triceps', 'leg_raise', 'pallof'],
+    legB:  ['hip_thrust', 'leg_press_uni', 'leg_curl', 'leg_ext', 'calf', 'triceps', 'leg_raise', 'pallof'],
     back:  ['pullups', 'iso_row', 'cable_row', 'face_pull', 'calf', 'leg_raise', 'pallof'],
   };
-  const DAY_LABELS = { upper: 'Upper body', legA: 'Leg A (both legs)', legB: 'Leg B (single leg)', back: 'Back' };
+  const DAY_LABELS = { upper: 'Upper body', legA: 'Leg A (both legs)', legB: 'Leg B (single leg)', back: 'Back', protein: 'Daily protein' };
   const DAY_NATIVE_GROUPS = { upper: ['upper','core'], legA: ['legs','arms','core'], legB: ['legs','arms','core'], back: ['back','core'] };
   const GROUP_LABELS = { upper: 'Upper body', legs: 'Legs', back: 'Back', arms: 'Arms', core: 'Core' };
 
@@ -425,6 +456,91 @@
     const el = document.getElementById('chrono');
     if (el) { el.classList.remove('active'); el.textContent = ''; }
   }
+
+  // ── Rest chrono (counts up after each set, resets on next set) ────────────
+  let _restInterval = null;
+  let _restStartedAt = null;
+  function startRestChrono() {
+    clearInterval(_restInterval);
+    _restStartedAt = Date.now();
+    const el = document.getElementById('restChrono');
+    if (!el) return;
+    el.classList.add('active');
+    const tick = () => {
+      if (!_restStartedAt) return;
+      const s = Math.floor((Date.now() - _restStartedAt) / 1000);
+      el.textContent = `Rest: ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    };
+    tick();
+    _restInterval = setInterval(tick, 1000);
+  }
+  function stopRestChrono() {
+    clearInterval(_restInterval); _restInterval = null; _restStartedAt = null;
+    const el = document.getElementById('restChrono');
+    if (el) { el.classList.remove('active'); el.textContent = ''; }
+  }
+
+  // ── Protein plans ─────────────────────────────────────────────────────────
+  // Keyed by JS getDay() 0=Sun 1=Mon … 6=Sat
+  const PROTEIN_PLANS = {
+    1: { type: 'Gym morning', target: 240, meals: [
+      { id: 'm1', time: '10:35', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
+      { id: 'm2', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
+      { id: 'm3', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
+      { id: 'm4', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
+      { id: 'm5', time: '19:00', label: 'Dinner', detail: 'Tofu stir-fry — 300g tofu + 150g edamame + rice + wok veg', protein: 55 },
+      { id: 'm6', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    ]},
+    2: { type: 'Running morning', target: 218, meals: [
+      { id: 't1', time: '8:15',  label: 'Pre-run snack', detail: 'Skyr 150g + banana', protein: 15 },
+      { id: 't2', time: '10:45', label: 'Post-run shake', detail: '1 Nutripure scoop (at home) + 300ml water', protein: 25 },
+      { id: 't3', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
+      { id: 't4', time: '13:00', label: 'Lunch', detail: 'Skyr 200g + 3 hard-boiled eggs + crackers + cucumber', protein: 38 },
+      { id: 't5', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
+      { id: 't6', time: '19:00', label: 'Dinner', detail: 'Shakshuka — 4 eggs + tomato + 150g cottage', protein: 50 },
+      { id: 't7', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    ]},
+    3: { type: 'Gym morning', target: 235, meals: [
+      { id: 'w1', time: '10:35', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
+      { id: 'w2', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
+      { id: 'w3', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Lentil Bowl (1 can tuna + 100g rice + 200g lentils + 100g cottage)', protein: 55 },
+      { id: 'w4', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
+      { id: 'w5', time: '19:00', label: 'Dinner', detail: 'Chickpea curry — 2 cans chickpeas + coconut milk + 200g Skyr', protein: 50 },
+      { id: 'w6', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    ]},
+    4: { type: 'Gym morning', target: 240, meals: [
+      { id: 'th1', time: '10:35', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
+      { id: 'th2', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
+      { id: 'th3', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
+      { id: 'th4', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
+      { id: 'th5', time: '19:00', label: 'Dinner', detail: 'Tofu stir-fry — 300g tofu + 150g edamame + rice + wok veg', protein: 55 },
+      { id: 'th6', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    ]},
+    5: { type: 'Running morning', target: 235, meals: [
+      { id: 'f1', time: '8:15',  label: 'Pre-run snack', detail: 'Skyr 150g + banana', protein: 15 },
+      { id: 'f2', time: '10:45', label: 'Post-run shake', detail: '1 Nutripure scoop (at home) + 300ml water', protein: 25 },
+      { id: 'f3', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
+      { id: 'f4', time: '13:00', label: 'Lunch', detail: 'Skyr 200g + 3 hard-boiled eggs + crackers + cucumber', protein: 38 },
+      { id: 'f5', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
+      { id: 'f6', time: '19:00', label: 'Dinner', detail: 'Salmon or tuna + rice + roasted veg', protein: 67 },
+      { id: 'f7', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    ]},
+    6: { type: 'Rest day', target: 230, meals: [
+      { id: 's1', time: '9:00',  label: 'Breakfast + Nutripure', detail: 'Skyr 300g + oats 40g + 1 Nutripure scoop', protein: 60 },
+      { id: 's2', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
+      { id: 's3', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
+      { id: 's4', time: '19:00', label: 'Dinner', detail: 'Chickpea curry — 2 cans chickpeas + coconut milk + 200g Skyr', protein: 60 },
+      { id: 's5', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    ]},
+    0: { type: 'Gym evening', target: 215, meals: [
+      { id: 'su1', time: '9:00',  label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
+      { id: 'su2', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
+      { id: 'su3', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
+      { id: 'su4', time: '19:30', label: 'Pre-workout snack', detail: 'Skyr 150g + banana (light fuel before evening gym)', protein: 15 },
+      { id: 'su5', time: '21:30', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
+      { id: 'su6', time: '22:00', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    ]},
+  };
 
   // ── Toast ─────────────────────────────────────────────────────────────────
   function toast(msg, type = 'normal') {
@@ -544,8 +660,10 @@
     }
     const doneEl  = document.getElementById('setsDone');
     const totalEl = document.getElementById('setsTotal');
+    const pctEl   = document.getElementById('sessionPct');
     if (doneEl)  doneEl.textContent  = done;
     if (totalEl) totalEl.textContent = total;
+    if (pctEl)   pctEl.textContent   = total > 0 ? `${Math.round(done / total * 100)}%` : '0%';
   }
 
   function isBonus(id) {
@@ -560,7 +678,8 @@
       <div class="session-banner">
         <div class="session-banner-left">
           <div class="label">${DAY_LABELS[currentDay]}</div>
-          <div class="progress"><span class="done-count" id="setsDone">0</span><span style="color:var(--muted)"> / <span id="setsTotal">0</span> sets</span></div>
+          <div class="progress"><span class="done-count" id="setsDone">0</span><span style="color:var(--muted)"> / <span id="setsTotal">0</span> sets</span><span class="pct" id="sessionPct">0%</span></div>
+          <div class="rest-chrono" id="restChrono"></div>
         </div>
         <button class="btn-finish" id="finishBtn">Finish / Save</button>
       </div>
@@ -818,6 +937,7 @@
           }
           saveSession();
           haptic();
+          startRestChrono();
           renderExercises();
           const reopen = document.querySelector(`.exercise[data-id="${exId}"]`);
           if (reopen) reopen.classList.add('open');
@@ -912,7 +1032,7 @@
           else { session[id].sets = Array(n).fill(null); }
         }
         delete session._startedAt;
-        stopChrono();
+        stopChrono(); stopRestChrono();
         saveSession(); renderExercises(); toast('Day reset');
       });
       return;
@@ -932,7 +1052,7 @@
         else { session[id].sets = Array(n).fill(null); }
       }
       delete session._startedAt;
-      stopChrono();
+      stopChrono(); stopRestChrono();
       saveSession(); renderExercises(); toast('Session saved ✓');
     });
   }
@@ -1250,13 +1370,238 @@
   function switchDay(day) {
     currentDay = day;
     document.querySelectorAll('.day-tab').forEach(t => t.classList.toggle('active', t.dataset.day === day));
-    if (day === 'history') { renderHistory(); return; }
+    if (day === 'history') { stopRestChrono(); renderHistory(); return; }
+    if (day === 'protein') { stopRestChrono(); renderProtein(); return; }
     dayList = loadDayList(day);
     session = loadSession(day);
     renderTrainingDay();
   }
 
-  // ── Midnight date refresh ─────────────────────────────────────────────────
+  // ── Protein tracker ───────────────────────────────────────────────────────
+  function loadProteinChecked(dateKey) { return loadJSON(`protein_v1:${dateKey}`, []); }
+  function saveProteinChecked(dateKey, arr) { saveJSON(`protein_v1:${dateKey}`, arr); }
+  function loadProteinNotes(dateKey) { return loadJSON(`protein_notes_v1:${dateKey}`, {}); }
+  function saveProteinNotes(dateKey, obj) { saveJSON(`protein_notes_v1:${dateKey}`, obj); }
+
+  // ── Smart protein parser ──────────────────────────────────────────────────
+  // Recognises: "45g protein", "ate 40g prot", "chicken 200g + 2 eggs", etc.
+  function parseProteinFromText(text) {
+    if (!text || !text.trim()) return null;
+    const t = text.toLowerCase();
+
+    // 1. Direct mention: "45g protein", "protein 45", "45 prot"
+    let m = t.match(/(\d+(?:\.\d+)?)\s*g?\s*(?:protein|prot(?:eine?)?)\b/) ||
+            t.match(/(?:protein|prot(?:eine?)?)\s*[:\-]?\s*(\d+(?:\.\d+)?)/);
+    if (m) return Math.round(parseFloat(m[1]));
+
+    // 2. Food-based parsing — common foods with protein per 100g
+    const FOODS = [
+      { k: ['skyr','quark'], p: 10 },
+      { k: ['cottage'], p: 11 },
+      { k: ['tuna','thon'], p: 25 },          // per 100g; "1 can" ≈ 80g
+      { k: ['chicken','poulet'], p: 31 },
+      { k: ['salmon','saumon'], p: 25 },
+      { k: ['egg','oeuf','oeufs','eggs'], p: 6, unit: 'egg', unitG: 55 }, // per egg
+      { k: ['oats','flocons'], p: 13 },
+      { k: ['edamame'], p: 12 },
+      { k: ['tofu'], p: 8 },
+      { k: ['lentils','lentilles'], p: 9 },
+      { k: ['chickpea','pois chiche','chickpeas'], p: 8 },
+      { k: ['nutripure','whey','shake','scoop'], p: 25, unit: 'scoop', unitG: 30 },
+      { k: ['bread','pain'], p: 8, unit: 'slice', unitG: 35 },
+      { k: ['crackers'], p: 8, unit: 'portion', unitG: 25 },
+      { k: ['rice','riz'], p: 3 },
+      { k: ['yogurt','yoghurt','yaourt'], p: 6 },
+    ];
+
+    let total = 0, matched = false;
+    for (const food of FOODS) {
+      for (const keyword of food.k) {
+        if (!t.includes(keyword)) continue;
+        // Look for a number near the keyword: "200g skyr", "skyr 300g", "2 eggs", "1 scoop"
+        const re = new RegExp(
+          `(\\d+(?:\\.\\d+)?)\\s*(?:g|ml|x)?\\s*(?:of\\s*)?${keyword}|` +
+          `${keyword}\\s*(?:breast|fillet|can|cans|scoop|scoops|slice|slices|x|×)?\\s*(\\d+(?:\\.\\d+)?)\\s*(?:g|ml)?`,
+          'i'
+        );
+        const fm = t.match(re);
+        if (fm) {
+          const amount = parseFloat(fm[1] || fm[2] || (food.unitG || 100));
+          // If "can" in context, treat as ~80g
+          const ctxStr = fm[0].toLowerCase();
+          let grams;
+          if (ctxStr.includes('can')) grams = amount * 80;
+          else if (food.unit === 'egg' && !ctxStr.includes('g')) grams = amount * (food.unitG || 55);
+          else if (food.unit === 'scoop' && !ctxStr.includes('g')) grams = amount * (food.unitG || 30);
+          else if (food.unit === 'slice' && !ctxStr.includes('g')) grams = amount * (food.unitG || 35);
+          else grams = amount; // treat as grams
+          total += (grams / 100) * food.p;
+          matched = true;
+        } else {
+          // Keyword found but no amount — use default serving
+          const defaultG = food.unitG || 100;
+          total += (defaultG / 100) * food.p;
+          matched = true;
+        }
+        break; // only match this food once
+      }
+    }
+    return matched ? Math.round(total) : null;
+  }
+
+  // ── Meal note modal ───────────────────────────────────────────────────────
+  function openMealNoteModal(meal, dateKey, existingNote, onSave) {
+    const planned = meal.protein;
+    document.getElementById('modalTitle').textContent = meal.label;
+    document.getElementById('modalBody').innerHTML = `
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5">
+        <span style="font-weight:700;color:var(--text)">${meal.time}</span> · Planned: ${meal.detail}
+      </div>
+      <div class="modal-group-label">What did you actually have?</div>
+      <textarea class="notes-input" id="mealNoteText" placeholder="e.g. chicken breast 180g + rice 100g + 2 eggs" style="margin-bottom:12px;min-height:72px">${existingNote ? existingNote.text : ''}</textarea>
+      <div class="modal-group-label">Protein (g)</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <input type="number" class="weight-input" id="mealNoteProtein" inputmode="numeric" value="${existingNote ? existingNote.protein : planned}" style="width:90px">
+        <span style="color:var(--muted);font-size:13px">g <span id="parseSuggestion" style="color:var(--accent-dim);font-size:11px"></span></span>
+        <button class="btn-action" id="parseBtn" style="font-size:11px;padding:8px 12px;margin-left:auto">Auto-detect</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Tip: type "2 eggs + skyr 200g" and tap Auto-detect, or enter grams directly.</div>
+      <div class="confirm-actions">
+        <button class="btn-action" id="mealNoteCancel">Cancel</button>
+        <button class="btn-action primary" id="mealNoteSave">Save</button>
+      </div>
+      ${existingNote ? `<button class="btn-remove" id="mealNoteRemove" style="margin-top:10px;width:100%">Clear override</button>` : ''}
+    `;
+
+    const textEl  = document.getElementById('mealNoteText');
+    const protEl  = document.getElementById('mealNoteProtein');
+    const suggest = document.getElementById('parseSuggestion');
+
+    document.getElementById('parseBtn').addEventListener('click', () => {
+      const parsed = parseProteinFromText(textEl.value);
+      if (parsed !== null) {
+        protEl.value = parsed;
+        suggest.textContent = `← detected ${parsed}g`;
+      } else {
+        suggest.textContent = '← not recognised, enter manually';
+      }
+    });
+
+    // Auto-parse as user types (debounced)
+    let parseTimer;
+    textEl.addEventListener('input', () => {
+      clearTimeout(parseTimer);
+      parseTimer = setTimeout(() => {
+        const parsed = parseProteinFromText(textEl.value);
+        if (parsed !== null) {
+          suggest.textContent = `← ~${parsed}g detected`;
+          protEl.value = parsed;
+        } else {
+          suggest.textContent = '';
+        }
+      }, 600);
+    });
+
+    document.getElementById('mealNoteCancel').addEventListener('click', closeModal);
+    document.getElementById('mealNoteSave').addEventListener('click', () => {
+      const text   = textEl.value.trim();
+      const prot   = parseInt(protEl.value);
+      if (!text) { toast('Add a note first'); return; }
+      if (isNaN(prot) || prot < 0) { toast('Enter a valid protein amount'); return; }
+      closeModal();
+      onSave({ text, protein: prot });
+    });
+    const removeBtn = document.getElementById('mealNoteRemove');
+    if (removeBtn) removeBtn.addEventListener('click', () => { closeModal(); onSave(null); });
+    document.getElementById('modal').classList.add('show');
+  }
+
+  function renderProtein() {
+    const root    = document.getElementById('mainContent');
+    const today   = new Date();
+    const dow     = today.getDay();
+    const dateKey = today.toISOString().slice(0, 10);
+    const plan    = PROTEIN_PLANS[dow];
+
+    const rerender = () => {
+      const checked = loadProteinChecked(dateKey);
+      const notes   = loadProteinNotes(dateKey);
+
+      // Use override protein when available & meal is checked
+      const getProtein = (m) => (checked.includes(m.id) && notes[m.id]) ? notes[m.id].protein : m.protein;
+      const eaten  = plan.meals.filter(m => checked.includes(m.id)).reduce((s, m) => s + getProtein(m), 0);
+      const pct    = Math.min(100, Math.round(eaten / plan.target * 100));
+      const over   = eaten >= plan.target;
+
+      root.innerHTML = `
+        <div class="protein-header">
+          <div class="protein-title">${plan.type} · Target: ${plan.target}g</div>
+          <div class="protein-progress"><span class="prot-done">${eaten}g</span><span style="color:var(--muted);font-size:14px;font-weight:600"> / ${plan.target}g</span><span style="font-size:12px;color:var(--muted);font-weight:600;margin-left:8px">${pct}%</span></div>
+          <div class="protein-bar-wrap"><div class="protein-bar ${over ? 'over' : ''}" style="width:${pct}%"></div></div>
+        </div>
+        ${plan.meals.map(m => {
+          const done     = checked.includes(m.id);
+          const note     = notes[m.id];
+          const hasNote  = !!note;
+          const dispProt = hasNote ? note.protein : m.protein;
+          return `<div class="meal-card ${done ? 'checked' : ''} ${hasNote ? 'overridden' : ''}" data-meal="${m.id}">
+            <div class="meal-check">${done ? '✓' : ''}</div>
+            <div class="meal-info">
+              <div class="meal-time">${m.time}</div>
+              <div class="meal-name">${m.label}</div>
+              <div class="meal-detail">${hasNote ? note.text : m.detail}</div>
+              ${hasNote ? `<div class="meal-override-note">Plan: ${m.detail}</div>` : ''}
+            </div>
+            <div class="meal-right">
+              <div class="meal-prot ${hasNote ? 'overridden' : ''}">+${dispProt}g${hasNote ? ' ✎' : ''}</div>
+              ${hasNote ? `<div class="meal-prot-planned">+${m.protein}g</div>` : ''}
+              <button class="meal-edit-btn" data-edit-meal="${m.id}" title="Log what you actually had">✎</button>
+            </div>
+          </div>`;
+        }).join('')}
+      `;
+
+      // Tap card body → toggle checked
+      root.querySelectorAll('.meal-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.meal-edit-btn')) return; // handled separately
+          const id  = card.dataset.meal;
+          let arr   = loadProteinChecked(dateKey);
+          if (arr.includes(id)) arr = arr.filter(x => x !== id);
+          else arr.push(id);
+          saveProteinChecked(dateKey, arr);
+          haptic();
+          rerender();
+        });
+      });
+
+      // Tap edit button → open note modal
+      root.querySelectorAll('.meal-edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id   = btn.dataset.editMeal;
+          const meal = plan.meals.find(m => m.id === id);
+          const nts  = loadProteinNotes(dateKey);
+          openMealNoteModal(meal, dateKey, nts[id] || null, (result) => {
+            const latestNotes = loadProteinNotes(dateKey);
+            if (result === null) delete latestNotes[id];
+            else latestNotes[id] = result;
+            saveProteinNotes(dateKey, latestNotes);
+            // Also make sure meal is checked when saving an override
+            if (result !== null) {
+              let arr = loadProteinChecked(dateKey);
+              if (!arr.includes(id)) { arr.push(id); saveProteinChecked(dateKey, arr); }
+            }
+            haptic();
+            rerender();
+          });
+        });
+      });
+    };
+    rerender();
+  }
+
+  // ── Midnight date refresh ────────────────────────────────────────────────
   function scheduleMidnightRefresh() {
     const now = new Date();
     const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
@@ -1283,4 +1628,3 @@
 
 </body>
 </html>
-
