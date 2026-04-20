@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>La Fonte</title>
+
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="La Fonte">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%230a0a0a'/%3E%3Ctext x='256' y='340' font-family='Times New Roman' font-style='italic' font-size='260' fill='%23d4ff3a' text-anchor='middle'%3ELf%3C/text%3E%3C/svg%3E">
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-2: #1c1c1c;
+      --border: #262626;
+      --text: #f5f5f5;
+      --muted: #8a8a8a;
+      --accent: #d4ff3a;
+      --accent-dim: #8fa827;
+      --done: #22c55e;
+      --danger: #ef4444;
+      --bonus: #60a5fa;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+    input, textarea { -webkit-user-select: text; user-select: text; }
+    html, body { -webkit-font-smoothing: antialiased; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      min-height: 100vh;
+      font-feature-settings: 'ss01', 'ss02';
+    }
+
+    .app { max-width: 520px; margin: 0 auto; padding: calc(16px + var(--safe-top)) 14px calc(120px + var(--safe-bottom)); position: relative; }
+
+    .header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+
+    .logo { font-family: 'Times New Roman', serif; font-size: 30px; font-weight: 400; letter-spacing: -0.02em; font-style: italic; }
+    .logo::first-letter { color: var(--accent); }
+
+    .tagline { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.2em; font-family: 'SF Mono', ui-monospace, monospace; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+
+    .date { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-family: 'SF Mono', ui-monospace, monospace; }
+    .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .chrono { font-size: 10px; color: var(--accent); font-family: 'SF Mono', ui-monospace, monospace; letter-spacing: 0.1em; display: none; }
+    .chrono.active { display: block; }
+
+    .day-tabs {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 20px;
+      background: var(--surface); padding: 4px; border-radius: 14px; border: 1px solid var(--border);
+      position: sticky; top: var(--safe-top); z-index: 50;
+    }
+    .day-tab { padding: 14px 2px; border: none; background: transparent; color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 10px; cursor: pointer; transition: all 0.15s; font-family: inherit; min-height: 48px; }
+    .day-tab.active { background: var(--accent); color: #000; }
+    .day-tab.history-tab.active { background: var(--bonus); color: #000; }
+
+    .session-banner { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .session-banner-left { flex: 1; min-width: 0; }
+    .session-banner .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .session-banner .progress { font-family: 'SF Mono', ui-monospace, monospace; font-size: 16px; font-weight: 700; }
+    .session-banner .progress .done-count { color: var(--accent); }
+
+    .btn-finish { background: var(--accent); border: 1px solid var(--accent); color: #000; padding: 12px 16px; border-radius: 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; font-family: inherit; font-weight: 800; min-height: 48px; white-space: nowrap; flex-shrink: 0; }
+    .btn-finish:active { transform: scale(0.96); opacity: 0.85; }
+
+    .exercise { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; position: relative; }
+    .exercise.complete { border-color: var(--done); }
+    .exercise.bonus { border-left: 3px solid var(--bonus); }
+
+    .ex-order { position: absolute; top: 12px; left: 14px; font-size: 10px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; letter-spacing: 0.1em; font-weight: 700; }
+
+    .ex-header { padding: 16px 14px 16px 42px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; gap: 10px; min-height: 68px; }
+    .ex-title-wrap { flex: 1; min-width: 0; }
+    .ex-title { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 3px 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .tag { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 6px; border-radius: 5px; background: var(--bonus); color: #000; }
+    .ex-last { font-size: 12px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; }
+    /* Last performance line under the subtitle */
+    .ex-last-perf { font-size: 11px; color: var(--accent-dim); font-family: 'SF Mono', ui-monospace, monospace; margin-top: 2px; }
+
+    .ex-status { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .set-pills { display: flex; gap: 4px; }
+    .pill { width: 9px; height: 9px; border-radius: 50%; background: var(--border); transition: all 0.15s; }
+    .pill.done { background: var(--accent); }
+    /* Text fallback when there are too many pills to show */
+    .pill-count { font-family: 'SF Mono', ui-monospace, monospace; font-size: 11px; font-weight: 800; color: var(--muted); }
+    .pill-count.all-done { color: var(--accent); }
+
+    .chevron { color: var(--muted); font-size: 16px; font-family: 'SF Mono', ui-monospace, monospace; font-weight: 700; transition: transform 0.2s; display: inline-block; }
+    .exercise.open .chevron { transform: rotate(180deg); }
+
+    .ex-body { display: none; padding: 0 14px 16px; border-top: 1px solid var(--border); }
+    .exercise.open .ex-body { display: block; }
+
+    .ex-note-box { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; margin-top: 14px; font-size: 13px; color: #d1d5db; line-height: 1.55; border-left: 3px solid var(--accent); }
+
+    .weight-row { display: flex; align-items: center; gap: 10px; margin: 16px 0 4px; }
+    .weight-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-right: auto; font-weight: 700; }
+    .weight-input { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 14px 12px; border-radius: 12px; font-size: 20px; font-weight: 700; font-family: 'SF Mono', ui-monospace, monospace; width: 110px; text-align: center; min-height: 52px; }
+    .weight-input:focus { outline: none; border-color: var(--accent); }
+    .weight-unit { color: var(--muted); font-size: 14px; font-family: 'SF Mono', ui-monospace, monospace; font-weight: 600; }
+
+    .sets-stepper { display: flex; align-items: center; gap: 12px; margin: 14px 0 4px; }
+    .stepper-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; margin-right: auto; }
+    .stepper-btn { background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text); width: 44px; height: 44px; border-radius: 10px; font-size: 22px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; line-height: 1; }
+    /* FIX: was :active, now :active:not(:disabled) to prevent flash on disabled state */
+    .stepper-btn:active:not(:disabled) { background: var(--accent); color: #000; border-color: var(--accent); transform: scale(0.94); }
+    .stepper-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .stepper-value { font-family: 'SF Mono', ui-monospace, monospace; font-size: 22px; font-weight: 800; min-width: 28px; text-align: center; }
+
+    .notes-input { width: 100%; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 12px 14px; border-radius: 10px; font-size: 14px; font-family: inherit; margin-top: 10px; min-height: 48px; }
+    .notes-input:focus { outline: none; border-color: var(--accent); }
+
+    .sets { display: grid; gap: 8px; margin-top: 14px; }
+
+    .set-btn { background: var(--surface-2); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 6px; cursor: pointer; transition: all 0.15s; font-family: inherit; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 80px; }
+    .set-btn .set-num { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; }
+    .set-btn .reps { font-size: 26px; font-weight: 800; font-family: 'SF Mono', ui-monospace, monospace; letter-spacing: -0.02em; line-height: 1; }
+    .set-btn .reps-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; }
+    .set-btn .set-weight-info { font-size: 9px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; font-weight: 700; margin-top: 1px; }
+    .set-btn.done { background: var(--accent); border-color: var(--accent); color: #000; }
+    .set-btn.done .set-num, .set-btn.done .reps-label { color: rgba(0,0,0,0.6); }
+    .set-btn.done .set-weight-info { color: rgba(0,0,0,0.55); }
+    .set-btn:active { transform: scale(0.94); opacity: 0.85; }
+
+    .sets-instruction { margin-top: 14px; padding: 10px 12px; background: rgba(212,255,58,0.08); border: 1px solid rgba(212,255,58,0.25); border-radius: 10px; font-size: 11px; color: var(--accent); text-align: center; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+
+    .set-btn-entering { background: var(--surface-2); border: 2px solid var(--accent); border-radius: 14px; padding: 8px 4px; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+    .set-btn-entering .set-num { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; }
+    .set-input-row { display: flex; align-items: baseline; gap: 2px; justify-content: center; }
+    .set-rep-input, .set-weight-input { background: transparent; border: none; color: var(--accent); font-size: 18px; font-weight: 800; font-family: 'SF Mono', ui-monospace, monospace; text-align: center; padding: 2px 0; line-height: 1; -webkit-user-select: text; user-select: text; }
+    .set-rep-input { width: 38px; }
+    .set-weight-input { width: 52px; color: var(--text); }
+    .set-rep-input:focus, .set-weight-input:focus { outline: none; }
+    .set-input-sep { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .set-input-unit { font-size: 10px; color: var(--muted); font-weight: 700; }
+
+    .unilateral-row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 12px 14px; background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.3); border-radius: 12px; font-size: 11px; color: var(--bonus); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; min-height: 56px; }
+    .side-toggle { display: flex; gap: 6px; }
+    .side-btn { background: var(--surface-2); border: 1.5px solid var(--border); color: var(--muted); padding: 10px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 700; min-height: 40px; min-width: 60px; }
+    .side-btn.active { background: var(--bonus); color: #000; border-color: var(--bonus); }
+    .side-btn:active { transform: scale(0.94); }
+
+    .btn-remove { background: transparent; border: 1.5px solid var(--border); color: var(--danger); padding: 14px 12px; border-radius: 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; font-family: inherit; margin-top: 14px; width: 100%; font-weight: 700; min-height: 48px; }
+    .btn-remove:active { background: var(--surface-2); }
+
+    .btn-add { width: 100%; background: var(--surface); border: 1.5px dashed var(--border); color: var(--muted); padding: 20px; border-radius: 16px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer; font-family: inherit; margin-top: 10px; transition: all 0.15s; min-height: 60px; }
+    .btn-add:active { border-color: var(--accent); color: var(--accent); transform: scale(0.99); }
+
+    /* History */
+    .history-month { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px; overflow: hidden; }
+    .history-month-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; min-height: 58px; }
+    .history-month-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+    .history-month-count { font-size: 12px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; font-weight: 600; }
+    .history-month-body { display: none; border-top: 1px solid var(--border); padding: 8px 12px 12px; }
+    .history-month.open .history-month-body { display: block; }
+
+    .history-session { background: var(--surface-2); border-radius: 12px; padding: 14px; margin-top: 8px; cursor: pointer; }
+    .history-session-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 8px; }
+    .history-session-day { font-size: 14px; font-weight: 700; }
+    .history-session-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .history-session-date { font-size: 11px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; white-space: nowrap; }
+    /* Delete session button */
+    .session-delete-btn { background: transparent; border: none; color: var(--muted); font-size: 18px; font-weight: 700; cursor: pointer; padding: 2px 6px; border-radius: 6px; font-family: inherit; line-height: 1; flex-shrink: 0; }
+    .session-delete-btn:active { color: var(--danger); background: rgba(239,68,68,0.1); }
+
+    .history-session-summary { font-size: 11px; color: var(--muted); line-height: 1.5; }
+    .history-session-details { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 13px; line-height: 1.7; }
+    .history-session.open .history-session-details { display: block; }
+    .history-ex-name { font-weight: 700; color: var(--text); font-size: 13px; }
+    .history-ex-sets { font-family: 'SF Mono', ui-monospace, monospace; color: var(--muted); font-size: 12px; }
+
+    .history-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+
+    .btn-action { background: var(--surface); border: 1.5px solid var(--border); color: var(--text); padding: 16px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; font-family: inherit; min-height: 54px; }
+    .btn-action.primary { background: var(--accent); border-color: var(--accent); color: #000; }
+    .btn-action:active { transform: scale(0.97); opacity: 0.9; }
+
+    .history-stats { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; margin-bottom: 14px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'SF Mono', ui-monospace, monospace; font-size: 22px; font-weight: 800; color: var(--accent); display: block; line-height: 1; }
+    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 6px; font-weight: 600; }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
+    .empty-state-icon { font-size: 32px; font-weight: 700; margin-bottom: 14px; color: var(--accent); }
+
+    /* Modal */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: flex-end; justify-content: center; z-index: 200; backdrop-filter: blur(6px); }
+    .modal-backdrop.show { display: flex; animation: fadeIn 0.2s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-width: 520px; max-height: 85vh; padding: 20px 14px calc(32px + var(--safe-bottom)); border-top: 1px solid var(--border); overflow-y: auto; animation: slideUp 0.25s cubic-bezier(0.2,0.9,0.3,1); overscroll-behavior: contain; }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .modal-title { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+    .modal-close { background: transparent; border: none; color: var(--muted); font-size: 20px; font-weight: 700; cursor: pointer; padding: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-family: inherit; }
+    .modal-close:active { color: var(--text); }
+    .modal-group { margin-bottom: 20px; }
+    .modal-group-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px; padding-left: 4px; font-weight: 700; }
+    .modal-option { width: 100%; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text); padding: 16px; border-radius: 12px; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; margin-bottom: 8px; font-family: inherit; display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 56px; }
+    .modal-option:disabled { opacity: 0.4; cursor: not-allowed; }
+    .modal-option .opt-weight { font-family: 'SF Mono', ui-monospace, monospace; font-size: 12px; color: var(--muted); white-space: nowrap; font-weight: 700; }
+    .modal-option:active:not(:disabled) { background: var(--accent); color: #000; border-color: var(--accent); transform: scale(0.99); }
+
+    /* Confirm modal */
+    .confirm-msg { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 0 0 20px; }
+    .confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* Share modal range buttons */
+    .range-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 16px; }
+
+    .export-textarea { width: 100%; min-height: 240px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-size: 12px; font-family: 'SF Mono', ui-monospace, monospace; line-height: 1.5; resize: vertical; }
+    .export-textarea:focus { outline: none; border-color: var(--accent); }
+    .export-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+
+    /* Toast — normal + error variant */
+    .toast { position: fixed; bottom: calc(24px + var(--safe-bottom)); left: 50%; transform: translateX(-50%) translateY(100px); background: var(--accent); color: #000; padding: 14px 22px; border-radius: 30px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 300; box-shadow: 0 12px 30px rgba(212,255,58,0.35); max-width: 90vw; text-align: center; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { background: var(--danger); color: #fff; box-shadow: 0 12px 30px rgba(239,68,68,0.35); }
+
+    @media (max-width: 380px) {
+      .app { padding: calc(14px + var(--safe-top)) 10px calc(120px + var(--safe-bottom)); }
+      .logo { font-size: 26px; }
+      .day-tab { font-size: 10px; padding: 12px 2px; }
+      .set-btn .reps { font-size: 22px; }
+      .set-btn { padding: 16px 4px; min-height: 72px; }
+      .ex-header { padding: 14px 12px 14px 38px; }
+    }
+
+    input, textarea, select { font-size: 16px; }
+    .weight-input { font-size: 20px; }
+    .notes-input { font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="logo">La Fonte.</div>
+    <div class="header-right">
+      <div class="date" id="date"></div>
+      <div class="chrono" id="chrono"></div>
+    </div>
+  </div>
+  <div class="tagline">Heavy things, moved carefully</div>
+  <div class="day-tabs">
+    <button class="day-tab active" data-day="upper">Upper</button>
+    <button class="day-tab" data-day="legA">Leg A</button>
+    <button class="day-tab" data-day="legB">Leg B</button>
+    <button class="day-tab" data-day="back">Back</button>
+    <button class="day-tab history-tab" data-day="history">Log</button>
+  </div>
+  <div id="mainContent"></div>
+</div>
+
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle"></div>
+      <button class="modal-close" id="modalClose">CLOSE</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  (function () {
+    const manifest = {
+      name: 'La Fonte', short_name: 'La Fonte',
+      description: 'Heavy things, moved carefully',
+      start_url: '.', display: 'standalone',
+      background_color: '#0a0a0a', theme_color: '#0a0a0a',
+      icons: [{ src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%230a0a0a'/%3E%3Ctext x='256' y='340' font-family='Times New Roman' font-style='italic' font-size='260' fill='%23d4ff3a' text-anchor='middle'%3ELf%3C/text%3E%3C/svg%3E", sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+    const link = document.createElement('link');
+    link.rel = 'manifest'; link.href = URL.createObjectURL(blob);
+    document.head.appendChild(link);
+  })();
+</script>
+
+<script type="module">
+  const DEFAULT_SETS = 4;
+  const MAX_PILLS    = 5;   // above this, show "done/total" text instead of dots
+
+  const LIBRARY = [
+    { id: 'chest_incline', name: 'Chest incline bench',           group: 'upper', weight: 38,    targetReps: '8-10',  note: 'Heavy compound push. Start the session here while you are freshest.' },
+    { id: 'dips',          name: 'Dips (triceps focus)',          group: 'upper', weight: 20,    targetReps: '8-10',  note: 'Keep torso vertical and elbows tucked to target triceps. Weighted vest at 20 kg.' },
+    { id: 'shoulders',     name: 'Shoulder lateral raise',        group: 'upper', weight: 20,    targetReps: '10-12', note: 'Side delts. Control the descent, no momentum.' },
+    { id: 'chest_fly',     name: 'Chest fly (cable pulley)',      group: 'upper', weight: 28.75, targetReps: '12-15', note: 'Per side. Focus on the stretch at the bottom and full squeeze at the top.' },
+    { id: 'leg_press_bi',  name: 'Leg press (both legs)',         group: 'legs',  weight: 107.5, targetReps: '8-10',  note: 'Heavy compound. Push through the heels, keep knees tracking over toes.' },
+    { id: 'leg_press_uni', name: 'Leg press (single leg)',        group: 'legs',  weight: 65,    targetReps: '8-10',  unilateral: true, note: 'Per leg. Start with the left (weaker) side. Match reps on right, do not exceed.' },
+    { id: 'rdl',           name: 'Romanian deadlift (dumbbells)', group: 'legs',  weight: 20,    targetReps: '10-12', note: 'Hinge at the hips, push the hips back. Slight knee bend, not a squat. Start light until form is dialled in.' },
+    { id: 'leg_ext',       name: 'Leg extension (single leg)',    group: 'legs',  weight: 42.5,  targetReps: '10-12', unilateral: true, note: 'Per leg. Start with left side, match reps on right.' },
+    { id: 'leg_curl',      name: 'Seated leg curl',               group: 'legs',  weight: 50,    targetReps: '10-12', note: 'Hamstring isolation. Full range of motion, control the return.' },
+    { id: 'calf',          name: 'Calf raise (machine)',          group: 'legs',  weight: 125,   targetReps: '12-15', note: 'Per side. Pause at the top, full stretch at the bottom.' },
+    { id: 'pullups',       name: 'Weighted pull-ups',             group: 'back',  weight: 5,     targetReps: '6-10',  note: 'Shoulder-width overhand grip. Work toward 4 sets of 6-8 reps at +5 kg. Progress slowly.' },
+    { id: 'iso_row',       name: 'Iso-lateral row (machine)',     group: 'back',  weight: 65,    targetReps: '8-10',  note: 'Per side. Heavy horizontal pull. Drive elbow back, squeeze shoulder blade.' },
+    { id: 'cable_row',     name: 'Seated cable row',              group: 'back',  weight: 40,    targetReps: '10-12', note: 'Pull the handle to your stomach, not your chest. Squeeze shoulder blades at the back.' },
+    { id: 'face_pull',     name: 'Face pull (cable)',             group: 'back',  weight: 38,    targetReps: '12-15', note: 'Elbows high, pull to face. Rear delts and rotator cuff health, not a main lift.' },
+    { id: 'biceps',        name: 'Biceps curl',                   group: 'arms',  weight: 28,    targetReps: '10-12', note: 'Isolation. Strict form, no swinging.' },
+    { id: 'triceps',       name: 'Triceps extension',             group: 'arms',  weight: 36.75, targetReps: '10-12', note: 'Position: right below 12 on the post. Strict form beats heavy weight for elbow health.' },
+    { id: 'leg_raise',     name: 'Hanging leg raise',             group: 'core',  weight: 0,     targetReps: '12-15', sets: 3, note: 'Progression: bent knee → straight-leg 90° → toes to bar → slow tempo → add weight. Write your current level in the notes.' },
+    { id: 'pallof',        name: 'Pallof press (cable)',          group: 'core',  weight: 20,    targetReps: '10-12', sets: 3, unilateral: true, note: 'Per side. Anti-rotation: stand sideways to the cable, press straight out and hold 2 seconds. Resist the pull.' },
+  ];
+
+  const DEFAULT_DAY = {
+    upper: ['chest_incline', 'dips', 'shoulders', 'chest_fly', 'leg_raise', 'pallof'],
+    legA:  ['leg_press_bi', 'leg_ext', 'leg_curl', 'calf', 'biceps', 'leg_raise', 'pallof'],
+    legB:  ['rdl', 'leg_press_uni', 'leg_curl', 'leg_ext', 'calf', 'triceps', 'leg_raise', 'pallof'],
+    back:  ['pullups', 'iso_row', 'cable_row', 'face_pull', 'calf', 'leg_raise', 'pallof'],
+  };
+  const DAY_LABELS = { upper: 'Upper body', legA: 'Leg A (both legs)', legB: 'Leg B (single leg)', back: 'Back' };
+  const DAY_NATIVE_GROUPS = { upper: ['upper','core'], legA: ['legs','arms','core'], legB: ['legs','arms','core'], back: ['back','core'] };
+  const GROUP_LABELS = { upper: 'Upper body', legs: 'Legs', back: 'Back', arms: 'Arms', core: 'Core' };
+
+  let currentDay = 'upper';
+  let library    = [];
+  let session    = {};
+  let dayList    = [];
+
+  // ── Storage ───────────────────────────────────────────────────────────────
+  function loadJSON(key, fallback = null) {
+    try { const r = localStorage.getItem(key); return r !== null ? JSON.parse(r) : fallback; }
+    catch { return fallback; }
+  }
+
+  function saveJSON(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch(e) {
+      console.error(e);
+      // FIX: surface storage-full errors to the user instead of silently failing
+      if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+        toast('⚠ Storage full — export your data now!', 'error');
+      }
+    }
+  }
+
+  // ── Library ───────────────────────────────────────────────────────────────
+  function initLibrary() {
+    const stored = loadJSON('library_v6');
+    if (!stored) {
+      library = LIBRARY.map(x => ({ ...x }));
+    } else {
+      library = LIBRARY.map(def => {
+        const prev = stored.find(s => s.id === def.id);
+        return prev ? { ...def, weight: prev.weight } : def;
+      });
+    }
+    saveJSON('library_v6', library);
+  }
+
+  function loadDayList(day) {
+    const stored = loadJSON(`daylist_v6:${day}`);
+    if (stored && Array.isArray(stored)) return stored;
+    const def = [...DEFAULT_DAY[day]];
+    saveJSON(`daylist_v6:${day}`, def);
+    return def;
+  }
+
+  function saveDayList(day) { saveJSON(`daylist_v6:${day}`, dayList); }
+  function loadSession(day) { return loadJSON(`session_v6:${day}`, {}) || {}; }
+  function saveSession()    { saveJSON(`session_v6:${currentDay}`, session); }
+  function loadHistory()    { return loadJSON('history_v6', []) || []; }
+  function saveHistory(h)   { saveJSON('history_v6', h); }
+
+  function getLib(id) { return library.find(x => x.id === id); }
+
+  function getSetsCount(lib, sdata) {
+    if (sdata && sdata.setsCount !== undefined) return sdata.setsCount;
+    return lib.sets || DEFAULT_SETS;
+  }
+
+  // ── Formatting helpers ────────────────────────────────────────────────────
+  function fmtDate() {
+    return new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
+  }
+  function fmtDateFull(iso) {
+    return new Date(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function fmtMonthKey(iso) {
+    return new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+  function fmtVol(kg) {
+    return kg >= 1000 ? `${(kg / 1000).toFixed(1)}t` : `${kg}kg`;
+  }
+  function fmtDuration(min) {
+    if (!min || min < 1) return null;
+    return min >= 60 ? `${Math.floor(min/60)}h ${min % 60}m` : `${min}m`;
+  }
+
+  // ── Haptic (Android only) ─────────────────────────────────────────────────
+  function haptic() { try { navigator.vibrate && navigator.vibrate(40); } catch {} }
+
+  let _chronoInterval = null;
+  function startChrono() {
+    if (_chronoInterval) return;
+    const el = document.getElementById('chrono');
+    if (!el) return;
+    const tick = () => {
+      if (!session._startedAt) return;
+      const s = Math.floor((Date.now() - session._startedAt) / 1000);
+      el.textContent = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    };
+    tick();
+    el.classList.add('active');
+    _chronoInterval = setInterval(tick, 1000);
+  }
+  function stopChrono() {
+    clearInterval(_chronoInterval);
+    _chronoInterval = null;
+    const el = document.getElementById('chrono');
+    if (el) { el.classList.remove('active'); el.textContent = ''; }
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────────────────
+  function toast(msg, type = 'normal') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.toggle('error', type === 'error');
+    el.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove('show'), type === 'error' ? 3500 : 1600);
+  }
+
+  // ── Custom confirm modal (replaces native confirm()) ──────────────────────
+  function confirmModal(title, message, onConfirm) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').innerHTML = `
+      <p class="confirm-msg">${message}</p>
+      <div class="confirm-actions">
+        <button class="btn-action" id="confirmCancel">Cancel</button>
+        <button class="btn-action primary" id="confirmOk">Confirm</button>
+      </div>
+    `;
+    document.getElementById('confirmCancel').addEventListener('click', closeModal);
+    document.getElementById('confirmOk').addEventListener('click', () => { closeModal(); onConfirm(); });
+    document.getElementById('modal').classList.add('show');
+  }
+
+  // ── Volume calculation ─────────────────────────────────────────────────────
+  function calcVolume(exercises) {
+    let vol = 0;
+    const isLogged = v => v !== null && v !== undefined;
+    exercises.forEach(ex => {
+      const sets = ex.unilateral
+        ? [...(ex.setsLeft||[]).filter(isLogged), ...(ex.setsRight||[]).filter(isLogged)]
+        : (ex.sets||[]).filter(isLogged);
+      sets.forEach(s => { if (s && typeof s === 'object' && s.reps && s.weight) vol += s.reps * s.weight; });
+    });
+    return Math.round(vol);
+  }
+
+  // ── Last performance lookup ───────────────────────────────────────────────
+  function getLastPerfText(exId, historyCache) {
+    const isLogged = v => v !== null && v !== undefined;
+    for (let i = historyCache.length - 1; i >= 0; i--) {
+      const ex = historyCache[i].exercises.find(e => e.id === exId);
+      if (!ex) continue;
+      if (ex.unilateral) {
+        const l = (ex.setsLeft  || []).filter(isLogged);
+        const r = (ex.setsRight || []).filter(isLogged);
+        if (!l.length && !r.length) continue;
+        const last = l[l.length - 1];
+        const info = (last && typeof last === 'object') ? ` · ${last.reps}r @ ${last.weight}kg` : '';
+        return `Last: ${l.length}L / ${r.length}R sets${info}`;
+      } else {
+        const logged = (ex.sets || []).filter(isLogged);
+        if (!logged.length) continue;
+        const last = logged[logged.length - 1];
+        const info = (last && typeof last === 'object') ? ` · ${last.reps}r @ ${last.weight}kg` : '';
+        return `Last: ${logged.length} sets${info}`;
+      }
+    }
+    return null;
+  }
+
+  // ── Session helpers ───────────────────────────────────────────────────────
+  function hasAnyLoggedSets() {
+    for (const id of dayList) {
+      const lib = getLib(id); if (!lib) continue;
+      const sdata = session[id]; if (!sdata) continue;
+      if (lib.unilateral) {
+        if ((sdata.setsLeft  || []).some(v => v !== null && v !== undefined)) return true;
+        if ((sdata.setsRight || []).some(v => v !== null && v !== undefined)) return true;
+      } else {
+        if ((sdata.sets || []).some(v => v !== null && v !== undefined)) return true;
+      }
+    }
+    return false;
+  }
+
+  function snapshotSession() {
+    const snapshot = {
+      id: Date.now().toString(),
+      day: currentDay, dayLabel: DAY_LABELS[currentDay],
+      date: new Date().toISOString(),
+      // SESSION DURATION: computed from when first set was logged
+      duration: session._startedAt ? Math.round((Date.now() - session._startedAt) / 60000) : null,
+      exercises: []
+    };
+    for (const id of dayList) {
+      const lib = getLib(id); if (!lib) continue;
+      const sdata = session[id]; if (!sdata) continue;
+      let hasData = lib.unilateral
+        ? (sdata.setsLeft  || []).some(v => v !== null && v !== undefined) || (sdata.setsRight || []).some(v => v !== null && v !== undefined)
+        : (sdata.sets || []).some(v => v !== null && v !== undefined);
+      if (!hasData) continue;
+      const exSnap = { id: lib.id, name: lib.name, weight: sdata.weight, notes: sdata.notes || '', unilateral: !!lib.unilateral };
+      if (lib.unilateral) { exSnap.setsLeft = [...(sdata.setsLeft||[])]; exSnap.setsRight = [...(sdata.setsRight||[])]; }
+      else { exSnap.sets = [...(sdata.sets||[])]; }
+      snapshot.exercises.push(exSnap);
+    }
+    return snapshot;
+  }
+
+  function updateProgress() {
+    let total = 0, done = 0;
+    for (const id of dayList) {
+      const lib = getLib(id); if (!lib) continue;
+      const sdata = session[id];
+      if (!sdata) { total += (lib.sets ?? DEFAULT_SETS) * (lib.unilateral ? 2 : 1); continue; }
+      if (lib.unilateral) {
+        total += (sdata.setsLeft?.length ?? 0) + (sdata.setsRight?.length ?? 0);
+        done  += (sdata.setsLeft  || []).filter(v => v !== null && v !== undefined).length;
+        done  += (sdata.setsRight || []).filter(v => v !== null && v !== undefined).length;
+      } else {
+        total += sdata.sets?.length ?? 0;
+        done  += (sdata.sets || []).filter(v => v !== null && v !== undefined).length;
+      }
+    }
+    const doneEl  = document.getElementById('setsDone');
+    const totalEl = document.getElementById('setsTotal');
+    if (doneEl)  doneEl.textContent  = done;
+    if (totalEl) totalEl.textContent = total;
+  }
+
+  function isBonus(id) {
+    const lib = getLib(id); if (!lib) return false;
+    return !DAY_NATIVE_GROUPS[currentDay].includes(lib.group);
+  }
+
+  // ── Render training day ───────────────────────────────────────────────────
+  function renderTrainingDay() {
+    const root = document.getElementById('mainContent');
+    root.innerHTML = `
+      <div class="session-banner">
+        <div class="session-banner-left">
+          <div class="label">${DAY_LABELS[currentDay]}</div>
+          <div class="progress"><span class="done-count" id="setsDone">0</span><span style="color:var(--muted)"> / <span id="setsTotal">0</span> sets</span></div>
+        </div>
+        <button class="btn-finish" id="finishBtn">Finish / Save</button>
+      </div>
+      <div id="exercises"></div>
+      <button class="btn-add" id="addBtn">+ Add exercise</button>
+    `;
+    renderExercises();
+    document.getElementById('finishBtn').addEventListener('click', finishSession);
+    document.getElementById('addBtn').addEventListener('click', openAddModal);
+  }
+
+  function renderExercises() {
+    // Load history once per render pass for last-performance lookup
+    const historyCache = loadHistory();
+    const container = document.getElementById('exercises');
+    container.innerHTML = '';
+    const isPillDone = v => v !== null && v !== undefined;
+
+    // Renders a row of pills, or "done/total" text if too many to fit
+    const renderPillsRow = (arr) => {
+      if (arr.length <= MAX_PILLS) {
+        return arr.map(v => `<div class="pill ${isPillDone(v) ? 'done' : ''}"></div>`).join('');
+      }
+      const done = arr.filter(isPillDone).length;
+      return `<span class="pill-count ${done === arr.length ? 'all-done' : ''}">${done}/${arr.length}</span>`;
+    };
+
+    dayList.forEach((exId, idx) => {
+      const lib = getLib(exId); if (!lib) return;
+
+      let sdata = session[exId];
+      if (!sdata) {
+        const n = lib.sets ?? DEFAULT_SETS;
+        sdata = { weight: lib.weight, notes: '', currentReps: 10, currentSide: 'L', setsCount: n };
+        if (lib.unilateral) { sdata.setsLeft = Array(n).fill(null); sdata.setsRight = Array(n).fill(null); }
+        else                { sdata.sets = Array(n).fill(null); }
+        session[exId] = sdata;
+      }
+      // Migration for sessions saved before setsCount existed
+      if (sdata.setsCount === undefined) {
+        sdata.setsCount = lib.unilateral
+          ? Math.max(sdata.setsLeft?.length ?? 0, sdata.setsRight?.length ?? 0)
+          : (sdata.sets?.length ?? lib.sets ?? DEFAULT_SETS);
+      }
+
+      const setsCount = getSetsCount(lib, sdata);
+
+      let doneCount, totalSets;
+      if (lib.unilateral) {
+        doneCount = sdata.setsLeft.filter(isPillDone).length + sdata.setsRight.filter(isPillDone).length;
+        totalSets = setsCount * 2;
+      } else {
+        doneCount = sdata.sets.filter(isPillDone).length;
+        totalSets = setsCount;
+      }
+      const isComplete = doneCount === totalSets;
+      const bonus = isBonus(exId);
+
+      const card = document.createElement('div');
+      card.className = 'exercise' + (isComplete ? ' complete' : '') + (bonus ? ' bonus' : '');
+      card.dataset.id = exId;
+
+      let tagsHTML = '';
+      if (bonus)          tagsHTML += `<span class="tag">+${GROUP_LABELS[lib.group]}</span>`;
+      if (lib.unilateral) tagsHTML += `<span class="tag" style="background:var(--bonus)">SINGLE</span>`;
+
+      const gridCols = `grid-template-columns:repeat(${setsCount},1fr)`;
+
+      const renderSetBtn = (v, i) => {
+        const hasData = v !== null && v !== undefined;
+        const reps    = hasData ? (typeof v === 'object' ? v.reps : v) : null;
+        const w       = hasData && typeof v === 'object' ? v.weight : null;
+        return `
+          <button class="set-btn ${hasData ? 'done' : ''}" data-set="${i}">
+            <span class="set-num">Set ${i+1}</span>
+            <span class="reps">${hasData ? reps : '-'}</span>
+            ${hasData && w !== null ? `<span class="set-weight-info">${w} kg</span>` : `<span class="reps-label">reps</span>`}
+          </button>`;
+      };
+
+      let setsHTML;
+      if (lib.unilateral) {
+        const active     = sdata.currentSide || 'L';
+        const activeSets = active === 'L' ? sdata.setsLeft : sdata.setsRight;
+        setsHTML = `
+          <div class="unilateral-row">
+            <span>Active side</span>
+            <div class="side-toggle">
+              <button class="side-btn ${active==='L'?'active':''}" data-side="L">Left</button>
+              <button class="side-btn ${active==='R'?'active':''}" data-side="R">Right</button>
+            </div>
+          </div>
+          <div class="sets" style="${gridCols}">${activeSets.map(renderSetBtn).join('')}</div>`;
+      } else {
+        setsHTML = `<div class="sets" style="${gridCols}">${sdata.sets.map(renderSetBtn).join('')}</div>`;
+      }
+
+      let pillsHTML;
+      if (lib.unilateral) {
+        pillsHTML = `<div style="display:flex;flex-direction:column;gap:3px">
+          <div class="set-pills">${renderPillsRow(sdata.setsLeft)}</div>
+          <div class="set-pills">${renderPillsRow(sdata.setsRight)}</div>
+        </div>`;
+      } else {
+        pillsHTML = `<div class="set-pills">${renderPillsRow(sdata.sets)}</div>`;
+      }
+
+      // FIX: show last session's performance instead of just current defaults
+      const lastPerf = getLastPerfText(exId, historyCache);
+
+      card.innerHTML = `
+        <div class="ex-order">${String(idx+1).padStart(2,'0')}</div>
+        <div class="ex-header">
+          <div class="ex-title-wrap">
+            <h3 class="ex-title">${lib.name}${tagsHTML}</h3>
+            <div class="ex-last">${sdata.weight} kg · ${lib.targetReps} reps · ${setsCount} sets</div>
+            ${lastPerf ? `<div class="ex-last-perf">${lastPerf}</div>` : ''}
+          </div>
+          <div class="ex-status">${pillsHTML}<span class="chevron">v</span></div>
+        </div>
+        <div class="ex-body">
+          ${lib.note ? `<div class="ex-note-box">${lib.note}</div>` : ''}
+          <div class="weight-row">
+            <span class="weight-label">Weight</span>
+            <input type="number" class="weight-input" data-role="weight" value="${sdata.weight}" step="0.25" inputmode="decimal" pattern="[0-9]*">
+            <span class="weight-unit">kg</span>
+          </div>
+          <div class="sets-stepper">
+            <span class="stepper-label">Sets</span>
+            <button class="stepper-btn" data-role="sets-minus" ${setsCount<=1?'disabled':''}>−</button>
+            <span class="stepper-value">${setsCount}</span>
+            <button class="stepper-btn" data-role="sets-plus"  ${setsCount>=8?'disabled':''}>+</button>
+          </div>
+          <div class="sets-instruction">Tap a set · enter reps × weight</div>
+          ${setsHTML}
+          <input type="text" class="notes-input" data-role="notes" placeholder="Notes (feel, form, PR, level)" value="${sdata.notes||''}">
+          <button class="btn-remove" data-role="remove">Remove from today</button>
+        </div>`;
+
+      attachExerciseHandlers(card, lib, sdata, exId, setsCount);
+      container.appendChild(card);
+    });
+
+    updateProgress();
+  }
+
+  function attachExerciseHandlers(card, lib, sdata, exId, setsCount) {
+    card.querySelector('.ex-header').addEventListener('click', () => {
+      document.querySelectorAll('.exercise.open').forEach(c => { if (c !== card) c.classList.remove('open'); });
+      card.classList.toggle('open');
+    });
+
+    const wInput = card.querySelector('[data-role="weight"]');
+    wInput.addEventListener('click', e => e.stopPropagation());
+    wInput.addEventListener('change', () => {
+      const val = parseFloat(wInput.value);
+      if (!isNaN(val)) {
+        sdata.weight = val;
+        lib.weight   = val;
+        library = library.map(x => x.id === lib.id ? { ...x, weight: val } : x);
+        saveJSON('library_v6', library);
+        saveSession();
+        // FIX: use sdata.setsCount (not stale closure variable) so the subtitle stays accurate
+        card.querySelector('.ex-last').textContent = `${val} kg · ${lib.targetReps} reps · ${sdata.setsCount} sets`;
+      }
+    });
+
+    const nInput = card.querySelector('[data-role="notes"]');
+    nInput.addEventListener('click', e => e.stopPropagation());
+    nInput.addEventListener('change', () => { sdata.notes = nInput.value; saveSession(); });
+
+    if (lib.unilateral) {
+      card.querySelectorAll('.side-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          sdata.currentSide = btn.dataset.side;
+          saveSession();
+          renderExercises();
+          const reopen = document.querySelector(`.exercise[data-id="${exId}"]`);
+          if (reopen) reopen.classList.add('open');
+        });
+      });
+    }
+
+    card.querySelectorAll('.set-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const setIdx    = parseInt(btn.dataset.set);
+        const targetArr = lib.unilateral ? (sdata.currentSide === 'L' ? sdata.setsLeft : sdata.setsRight) : sdata.sets;
+
+        // Already logged → clear
+        if (targetArr[setIdx] !== null && targetArr[setIdx] !== undefined) {
+          targetArr[setIdx] = null;
+          saveSession();
+          haptic();
+          renderExercises();
+          const reopen = document.querySelector(`.exercise[data-id="${exId}"]`);
+          if (reopen) reopen.classList.add('open');
+          toast('Set cleared');
+          return;
+        }
+
+        // Suggest from previous set
+        let suggestedReps   = sdata.currentReps ?? 10;
+        let suggestedWeight = sdata.weight;
+        for (let j = setIdx - 1; j >= 0; j--) {
+          const prev = targetArr[j];
+          if (prev !== null && prev !== undefined) {
+            if (typeof prev === 'object') { suggestedReps = prev.reps; suggestedWeight = prev.weight; }
+            else { suggestedReps = prev; }
+            break;
+          }
+        }
+
+        btn.classList.add('set-btn-entering');
+        btn.innerHTML = `
+          <span class="set-num">Set ${setIdx+1}</span>
+          <div class="set-input-row">
+            <input type="number" class="set-rep-input"    inputmode="numeric" pattern="[0-9]*" value="${suggestedReps}">
+            <span class="set-input-sep">x</span>
+            <input type="number" class="set-weight-input" inputmode="decimal" step="0.25"      value="${suggestedWeight}">
+            <span class="set-input-unit">kg</span>
+          </div>`;
+
+        const repInput    = btn.querySelector('.set-rep-input');
+        const weightInput = btn.querySelector('.set-weight-input');
+        repInput.focus(); repInput.select();
+
+        let committed = false;
+
+        const commit = () => {
+          if (committed) return; committed = true;
+          const reps   = parseInt(repInput.value.trim());
+          const weight = parseFloat(weightInput.value.trim());
+          if (isNaN(reps) || reps < 1 || isNaN(weight) || weight < 0) {
+            renderExercises();
+            const reopen = document.querySelector(`.exercise[data-id="${exId}"]`);
+            if (reopen) reopen.classList.add('open');
+            return;
+          }
+          targetArr[setIdx]  = { reps, weight };
+          sdata.currentReps  = reps;
+          sdata.weight       = weight;
+          lib.weight         = weight;
+          library = library.map(x => x.id === lib.id ? { ...x, weight } : x);
+          saveJSON('library_v6', library);
+          // SESSION DURATION: mark when first set is logged
+          if (!session._startedAt) {
+            session._startedAt = Date.now();
+            const t = new Date(session._startedAt);
+            const hh = String(t.getHours()).padStart(2, '0');
+            const mm = String(t.getMinutes()).padStart(2, '0');
+            toast(`⏱ Session started at ${hh}:${mm}`);
+            startChrono();
+          }
+          saveSession();
+          haptic();
+          renderExercises();
+          const reopen = document.querySelector(`.exercise[data-id="${exId}"]`);
+          if (reopen) reopen.classList.add('open');
+          const sideLabel = lib.unilateral ? ` (${sdata.currentSide === 'L' ? 'Left' : 'Right'})` : '';
+          toast(`Set ${setIdx+1}${sideLabel}: ${reps} reps at ${weight} kg`);
+        };
+
+        const stopProp    = ev => ev.stopPropagation();
+        const handleEnter = ev => {
+          if (ev.key !== 'Enter') return;
+          ev.preventDefault();
+          if (document.activeElement === repInput) { weightInput.focus(); weightInput.select(); }
+          else { weightInput.blur(); }
+        };
+        repInput.addEventListener('click', stopProp);
+        weightInput.addEventListener('click', stopProp);
+        repInput.addEventListener('keydown', handleEnter);
+        weightInput.addEventListener('keydown', handleEnter);
+        const handleBlur = () => {
+          setTimeout(() => {
+            if (document.activeElement !== repInput && document.activeElement !== weightInput) commit();
+          }, 50);
+        };
+        repInput.addEventListener('blur', handleBlur);
+        weightInput.addEventListener('blur', handleBlur);
+      });
+    });
+
+    // Sets stepper
+    card.querySelector('[data-role="sets-minus"]').addEventListener('click', e => {
+      e.stopPropagation();
+      if (sdata.setsCount <= 1) { toast('Minimum 1 set'); return; }
+      const lastIdx = sdata.setsCount - 1;
+      const doRemove = () => {
+        if (lib.unilateral) { sdata.setsLeft.pop(); sdata.setsRight.pop(); }
+        else { sdata.sets.pop(); }
+        sdata.setsCount--;
+        saveSession();
+        renderExercises();
+        const reopen = document.querySelector(`.exercise[data-id="${exId}"]`);
+        if (reopen) reopen.classList.add('open');
+        toast(`${sdata.setsCount} set${sdata.setsCount !== 1 ? 's' : ''}`);
+      };
+      let hasData = false;
+      if (lib.unilateral) {
+        const lv = sdata.setsLeft[lastIdx], rv = sdata.setsRight[lastIdx];
+        hasData = (lv !== null && lv !== undefined) || (rv !== null && rv !== undefined);
+      } else {
+        const v = sdata.sets[lastIdx];
+        hasData = v !== null && v !== undefined;
+      }
+      if (hasData) { confirmModal('Remove set', 'Last set has logged data. Remove it?', doRemove); }
+      else { doRemove(); }
+    });
+
+    card.querySelector('[data-role="sets-plus"]').addEventListener('click', e => {
+      e.stopPropagation();
+      if (sdata.setsCount >= 8) { toast('Maximum 8 sets'); return; }
+      if (lib.unilateral) { sdata.setsLeft.push(null); sdata.setsRight.push(null); }
+      else { sdata.sets.push(null); }
+      sdata.setsCount++;
+      saveSession();
+      renderExercises();
+      const reopen = document.querySelector(`.exercise[data-id="${exId}"]`);
+      if (reopen) reopen.classList.add('open');
+      toast(`${sdata.setsCount} sets`);
+    });
+
+    // Remove exercise
+    card.querySelector('[data-role="remove"]').addEventListener('click', e => {
+      e.stopPropagation();
+      confirmModal('Remove exercise', `Remove "${lib.name}" from today's session?`, () => {
+        dayList = dayList.filter(id => id !== exId);
+        delete session[exId];
+        saveDayList(currentDay);
+        saveSession();
+        renderExercises();
+        toast('Removed');
+      });
+    });
+  }
+
+  // ── Finish / save session ─────────────────────────────────────────────────
+  function finishSession() {
+    if (!hasAnyLoggedSets()) {
+      confirmModal('Reset day', 'No sets logged. Reset the day without saving?', () => {
+        for (const id of Object.keys(session)) {
+          if (id.startsWith('_')) continue;
+          const lib = getLib(id); if (!lib) continue;
+          const n = session[id].setsCount ?? lib.sets ?? DEFAULT_SETS;
+          if (lib.unilateral) { session[id].setsLeft = Array(n).fill(null); session[id].setsRight = Array(n).fill(null); }
+          else { session[id].sets = Array(n).fill(null); }
+        }
+        delete session._startedAt;
+        stopChrono();
+        saveSession(); renderExercises(); toast('Day reset');
+      });
+      return;
+    }
+
+    confirmModal('Save session', `Save this ${DAY_LABELS[currentDay]} session and start fresh?`, () => {
+      const snap    = snapshotSession();
+      const history = loadHistory();
+      history.push(snap);
+      saveHistory(history);
+
+      for (const id of Object.keys(session)) {
+        if (id.startsWith('_')) continue;
+        const lib = getLib(id); if (!lib) continue;
+        const n = session[id].setsCount ?? lib.sets ?? DEFAULT_SETS;
+        if (lib.unilateral) { session[id].setsLeft = Array(n).fill(null); session[id].setsRight = Array(n).fill(null); }
+        else { session[id].sets = Array(n).fill(null); }
+      }
+      delete session._startedAt;
+      stopChrono();
+      saveSession(); renderExercises(); toast('Session saved ✓');
+    });
+  }
+
+  // ── History ───────────────────────────────────────────────────────────────
+  function renderHistory() {
+    const history = loadHistory();
+    const root    = document.getElementById('mainContent');
+
+    if (history.length === 0) {
+      root.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">LOG</div>
+          <div>No sessions logged yet.<br>Finish a session and it will show up here.</div>
+        </div>`;
+      return;
+    }
+
+    const isLogged  = v => v !== null && v !== undefined;
+    const totalSets = history.reduce((sum, s) => sum + s.exercises.reduce((es, ex) => {
+      if (ex.unilateral) return es + (ex.setsLeft||[]).filter(isLogged).length + (ex.setsRight||[]).filter(isLogged).length;
+      return es + (ex.sets||[]).filter(isLogged).length;
+    }, 0), 0);
+
+    const firstDate = new Date(history[0].date);
+    const lastDate  = new Date(history[history.length-1].date);
+    const daysSpan  = Math.max(1, Math.ceil((lastDate - firstDate) / (1000*60*60*24)) + 1);
+    // FIX: show "—" when we don't yet have a full week of data (was showing 7.0 on day 1)
+    const sessionsPerWeek = daysSpan < 7 ? '—' : (history.length / daysSpan * 7).toFixed(1);
+
+    const byMonth = {};
+    history.slice().reverse().forEach(s => {
+      const key = fmtMonthKey(s.date);
+      if (!byMonth[key]) byMonth[key] = [];
+      byMonth[key].push(s);
+    });
+
+    let monthsHTML = '';
+    Object.entries(byMonth).forEach(([month, sessions], idx) => {
+      monthsHTML += `
+        <div class="history-month ${idx===0?'open':''}" data-month="${month}">
+          <div class="history-month-header">
+            <div class="history-month-title">${month}</div>
+            <div class="history-month-count">${sessions.length} session${sessions.length!==1?'s':''}</div>
+          </div>
+          <div class="history-month-body">${sessions.map(renderHistorySessionCard).join('')}</div>
+        </div>`;
+    });
+
+    root.innerHTML = `
+      <div class="history-actions">
+        <button class="btn-action primary" id="shareClaudeBtn">Share with Claude</button>
+        <button class="btn-action" id="exportBtn">Export data</button>
+      </div>
+      <div class="history-stats">
+        <div class="stat"><span class="stat-num">${history.length}</span><div class="stat-label">Sessions</div></div>
+        <div class="stat"><span class="stat-num">${totalSets}</span><div class="stat-label">Sets logged</div></div>
+        <div class="stat"><span class="stat-num">${sessionsPerWeek}</span><div class="stat-label">Avg / week</div></div>
+      </div>
+      ${monthsHTML}`;
+
+    document.querySelectorAll('.history-month-header').forEach(h => {
+      h.addEventListener('click', () => h.parentElement.classList.toggle('open'));
+    });
+    document.querySelectorAll('.history-session').forEach(s => {
+      s.addEventListener('click', () => s.classList.toggle('open'));
+    });
+    // Delete session buttons
+    document.querySelectorAll('.session-delete-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const sid = btn.dataset.sessionId;
+        confirmModal('Delete session', 'Remove this session from history? This cannot be undone.', () => {
+          const h = loadHistory().filter(s => s.id !== sid);
+          saveHistory(h);
+          renderHistory();
+          toast('Session deleted');
+        });
+      });
+    });
+    document.getElementById('exportBtn').addEventListener('click', openExportModal);
+    document.getElementById('shareClaudeBtn').addEventListener('click', openShareModal);
+  }
+
+  function renderHistorySessionCard(s) {
+    const isLogged  = v => v !== null && v !== undefined;
+    const formatSet = v => typeof v === 'object' ? `${v.reps} × ${v.weight}kg` : `${v} reps`;
+
+    const totalSetsLogged = s.exercises.reduce((sum, ex) => {
+      if (ex.unilateral) return sum + (ex.setsLeft||[]).filter(isLogged).length + (ex.setsRight||[]).filter(isLogged).length;
+      return sum + (ex.sets||[]).filter(isLogged).length;
+    }, 0);
+
+    // VOLUME tracking in session card
+    const vol = calcVolume(s.exercises);
+    const dur = s.duration ? fmtDuration(s.duration) : null;
+    const summaryParts = [];
+    if (dur) summaryParts.push(dur);
+    summaryParts.push(`${s.exercises.length} exercises`);
+    summaryParts.push(`${totalSetsLogged} sets`);
+    if (vol > 0) summaryParts.push(fmtVol(vol));
+
+    let detailsHTML = '';
+    s.exercises.forEach(ex => {
+      if (ex.unilateral) {
+        const l = (ex.setsLeft||[]).filter(isLogged);
+        const r = (ex.setsRight||[]).filter(isLogged);
+        detailsHTML += `<div style="margin-bottom:10px">
+          <div class="history-ex-name">${ex.name}</div>
+          <div class="history-ex-sets">Left: ${l.length ? l.map(formatSet).join(', ') : '—'}</div>
+          <div class="history-ex-sets">Right: ${r.length ? r.map(formatSet).join(', ') : '—'}</div>
+          ${ex.notes ? `<div class="history-ex-sets" style="font-style:italic">${ex.notes}</div>` : ''}
+        </div>`;
+      } else {
+        const logged = (ex.sets||[]).filter(isLogged);
+        detailsHTML += `<div style="margin-bottom:10px">
+          <div class="history-ex-name">${ex.name}</div>
+          <div class="history-ex-sets">${logged.length ? logged.map(formatSet).join(', ') : '—'}</div>
+          ${ex.notes ? `<div class="history-ex-sets" style="font-style:italic">${ex.notes}</div>` : ''}
+        </div>`;
+      }
+    });
+
+    return `
+      <div class="history-session" data-session-id="${s.id}">
+        <div class="history-session-header">
+          <div class="history-session-day">${s.dayLabel}</div>
+          <div class="history-session-meta">
+            <div class="history-session-date">${fmtDateFull(s.date)}</div>
+            <button class="session-delete-btn" data-session-id="${s.id}">×</button>
+          </div>
+        </div>
+        <div class="history-session-summary">${summaryParts.join(' · ')}</div>
+        <div class="history-session-details">${detailsHTML}</div>
+      </div>`;
+  }
+
+  // ── Export / Share ────────────────────────────────────────────────────────
+  function buildClaudeShareText(history) {
+    if (history.length === 0) return 'No sessions in this date range.';
+    const isLogged  = v => v !== null && v !== undefined;
+    const formatSet = v => typeof v === 'object' ? `${v.reps} reps @ ${v.weight}kg` : `${v} reps`;
+    const firstDate = new Date(history[0].date);
+    const lastDate  = new Date(history[history.length-1].date);
+
+    let text = `# La Fonte — Training log\n\n`;
+    text += `Hi Claude, here is my training data from ${firstDate.toLocaleDateString()} to ${lastDate.toLocaleDateString()}. Please review progression, form/effort notes, and flag anything worth adjusting.\n\n`;
+    text += `Context: 3 years training, ~107 kg, 18.6% body fat (InBody). Left leg ~3% behind right. Program: Upper 1×, Leg A (both legs) 1×, Leg B (single leg) 1×, Back 1× weekly.\n\n`;
+    text += `Sessions: ${history.length}  |  Range: ${firstDate.toLocaleDateString()} – ${lastDate.toLocaleDateString()}\n\n---\n\n`;
+
+    history.forEach(s => {
+      const vol = calcVolume(s.exercises);
+      const dur = s.duration ? fmtDuration(s.duration) : null;
+      text += `## ${s.dayLabel} — ${fmtDateFull(s.date)}\n`;
+      const meta = [];
+      if (dur) meta.push(`Duration: ${dur}`);
+      if (vol > 0) meta.push(`Volume: ${fmtVol(vol)}`);
+      if (meta.length) text += meta.join('  |  ') + '\n';
+      text += '\n';
+      s.exercises.forEach(ex => {
+        if (ex.unilateral) {
+          const l = (ex.setsLeft||[]).filter(isLogged);
+          const r = (ex.setsRight||[]).filter(isLogged);
+          text += `- ${ex.name}\n`;
+          text += `  - Left:  ${l.length ? l.map(formatSet).join(', ') : '—'}\n`;
+          text += `  - Right: ${r.length ? r.map(formatSet).join(', ') : '—'}\n`;
+          if (ex.notes) text += `  - Note: ${ex.notes}\n`;
+        } else {
+          const logged = (ex.sets||[]).filter(isLogged);
+          text += `- ${ex.name}: ${logged.length ? logged.map(formatSet).join(', ') : '—'}\n`;
+          if (ex.notes) text += `  - Note: ${ex.notes}\n`;
+        }
+      });
+      text += '\n';
+    });
+
+    text += `---\n\nQuestions:\n1. Where am I progressing well?\n2. Where am I stalling, and what should I change?\n3. Any form, volume, or frequency adjustments for the next month?\n`;
+    return text;
+  }
+
+  // Share with Claude modal — with date range filter
+  function openShareModal() {
+    const allHistory = loadHistory();
+
+    const getFiltered = (weeks) => {
+      if (!weeks) return allHistory;
+      const cutoff = Date.now() - weeks * 7 * 24 * 60 * 60 * 1000;
+      return allHistory.filter(s => new Date(s.date).getTime() >= cutoff);
+    };
+
+    document.getElementById('modalTitle').textContent = 'Share with Claude';
+    document.getElementById('modalBody').innerHTML = `
+      <div class="modal-group-label">Date range</div>
+      <div class="range-grid" id="rangeGrid">
+        <button class="btn-action primary" data-weeks="2">Last 2 weeks</button>
+        <button class="btn-action" data-weeks="4">Last month</button>
+        <button class="btn-action" data-weeks="12">Last 3 months</button>
+        <button class="btn-action" data-weeks="0">All time</button>
+      </div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:10px;line-height:1.5" id="shareHint"></div>
+      <textarea class="export-textarea" id="exportText" readonly></textarea>
+      <div class="export-buttons">
+        <button class="btn-action primary" id="copyBtn">Copy</button>
+        <button class="btn-action" id="downloadBtn">Download</button>
+      </div>`;
+
+    let selectedWeeks = 2;
+
+    const updateContent = () => {
+      const filtered = getFiltered(selectedWeeks);
+      const hint     = document.getElementById('shareHint');
+      hint.textContent = filtered.length
+        ? `${filtered.length} session${filtered.length!==1?'s':''} in range — copy and paste into a Claude chat.`
+        : 'No sessions in this date range.';
+      document.getElementById('exportText').value = buildClaudeShareText(filtered);
+    };
+
+    document.querySelectorAll('#rangeGrid .btn-action').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#rangeGrid .btn-action').forEach(b => b.classList.remove('primary'));
+        btn.classList.add('primary');
+        selectedWeeks = parseInt(btn.dataset.weeks);
+        updateContent();
+      });
+    });
+
+    updateContent();
+
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      const text = document.getElementById('exportText').value;
+      try { await navigator.clipboard.writeText(text); toast('Copied ✓'); }
+      catch { document.getElementById('exportText').select(); toast('Selected — tap Copy'); }
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const text = document.getElementById('exportText').value;
+      const blob = new Blob([text], { type: 'text/markdown' });
+      const url  = URL.createObjectURL(blob);
+      const a    = Object.assign(document.createElement('a'), { href: url, download: `la-fonte-${new Date().toISOString().slice(0,10)}.md` });
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast('Downloaded ✓');
+    });
+
+    document.getElementById('modal').classList.add('show');
+  }
+
+  // JSON export modal
+  function openExportModal() {
+    const text = JSON.stringify(loadHistory(), null, 2);
+    document.getElementById('modalTitle').textContent = 'Export data';
+    document.getElementById('modalBody').innerHTML = `
+      <div style="color:var(--muted);font-size:12px;margin-bottom:12px;line-height:1.5">Raw JSON of your full training history. Use this as a backup.</div>
+      <textarea class="export-textarea" id="exportText" readonly>${text.replace(/</g,'&lt;')}</textarea>
+      <div class="export-buttons">
+        <button class="btn-action primary" id="copyBtn">Copy</button>
+        <button class="btn-action" id="downloadBtn">Download</button>
+      </div>`;
+
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(text); toast('Copied ✓'); }
+      catch { document.getElementById('exportText').select(); toast('Selected — tap Copy'); }
+    });
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const blob = new Blob([text], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = Object.assign(document.createElement('a'), { href: url, download: `la-fonte-${new Date().toISOString().slice(0,10)}.json` });
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast('Downloaded ✓');
+    });
+
+    document.getElementById('modal').classList.add('show');
+  }
+
+  // Add exercise modal
+  function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Add exercise';
+    const body = document.getElementById('modalBody');
+    body.innerHTML = '';
+    ['upper','back','legs','arms','core'].forEach(g => {
+      const group = document.createElement('div');
+      group.className = 'modal-group';
+      group.innerHTML = `<div class="modal-group-label">${GROUP_LABELS[g]}</div>`;
+      library.filter(x => x.group === g).forEach(lib => {
+        const alreadyIn = dayList.includes(lib.id);
+        const btn = document.createElement('button');
+        btn.className = 'modal-option';
+        btn.disabled  = alreadyIn;
+        btn.innerHTML = `
+          <span>${lib.name}${alreadyIn ? ' <span style="color:var(--muted);font-size:11px">(added)</span>' : ''}</span>
+          <span class="opt-weight">${lib.weight} kg</span>`;
+        btn.addEventListener('click', () => {
+          if (alreadyIn) return;
+          dayList.push(lib.id);
+          saveDayList(currentDay);
+          closeModal();
+          renderExercises();
+          toast(`${lib.name} added`);
+          setTimeout(() => {
+            const card = document.querySelector(`.exercise[data-id="${lib.id}"]`);
+            if (card) { card.classList.add('open'); card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+          }, 100);
+        });
+        group.appendChild(btn);
+      });
+      body.appendChild(group);
+    });
+    document.getElementById('modal').classList.add('show');
+  }
+
+  function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+  // ── Navigation ────────────────────────────────────────────────────────────
+  function switchDay(day) {
+    currentDay = day;
+    document.querySelectorAll('.day-tab').forEach(t => t.classList.toggle('active', t.dataset.day === day));
+    if (day === 'history') { renderHistory(); return; }
+    dayList = loadDayList(day);
+    session = loadSession(day);
+    renderTrainingDay();
+  }
+
+  // ── Midnight date refresh ─────────────────────────────────────────────────
+  function scheduleMidnightRefresh() {
+    const now = new Date();
+    const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
+    setTimeout(() => {
+      document.getElementById('date').textContent = fmtDate();
+      scheduleMidnightRefresh(); // reschedule for the next midnight
+    }, msUntilMidnight);
+  }
+
+  // ── Boot ──────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.day-tab').forEach(tab => tab.addEventListener('click', () => switchDay(tab.dataset.day)));
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+  document.getElementById('date').textContent = fmtDate();
+  scheduleMidnightRefresh();
+
+  initLibrary();
+  dayList = loadDayList(currentDay);
+  session = loadSession(currentDay);
+  if (session._startedAt) startChrono();
+  renderTrainingDay();
+</script>
+
+</body>
+</html>
