@@ -622,7 +622,16 @@
         ? [...(ex.setsLeft||[]), ...(ex.setsRight||[])].filter(isLogged)
         : (ex.sets||[]).filter(isLogged);
       if (!allSets.length) continue;
-      return allSets.every(s => (typeof s === %�����М���̹ɕ�̀�̤�������Ȥ�(�����(����ɕ��ɸ����͔�(���((������R�R �M��ͥ���������̃�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R (���չ�ѥ��������1�����M��̠���(������Ȁ�����Ё���������1��Ф��(����������Ё����􁝕�1������쁥������������ѥ�Ք�(����������Ё͑�ф��͔ssion[id]; if (!sdata) continue;
+      return allSets.every(s => (typeof s === 'object' ? s.reps : s) >= upper);
+    }
+    return false;
+  }
+
+  // ── Session helpers ───────────────────────────────────────────────────────
+  function hasAnyLoggedSets() {
+    for (const id of dayList) {
+      const lib = getLib(id); if (!lib) continue;
+      const sdata = session[id]; if (!sdata) continue;
       if (lib.unilateral) {
         if ((sdata.setsLeft  || []).some(v => v !== null && v !== undefined)) return true;
         if ((sdata.setsRight || []).some(v => v !== null && v !== undefined)) return true;
@@ -765,7 +774,11 @@
       const renderSetBtn = (v, i) => {
         const hasData = v !== null && v !== undefined;
         const reps    = hasData ? (typeof v === 'object' ? v.reps : v) : null;
-        const w       = hasData && typeof v === %�����М���عݕ���Ѐ聹ձ��(��������ɕ��ɸ��(�������������ѽ��������͕е�Ѹ�������ф����������耜�􈁑�ф�͕������(������������������������͕е�մ��M�Ѐ������������(������������������������ɕ�̈�������ф���ɕ�s : '-'}</span>
+        const w       = hasData && typeof v === 'object' ? v.weight : null;
+        return `
+          <button class="set-btn ${hasData ? 'done' : ''}" data-set="${i}">
+            <span class="set-num">Set ${i+1}</span>
+            <span class="reps">${hasData ? reps : '-'}</span>
             ${hasData && w !== null ? `<span class="set-weight-info">${w} kg</span>` : `<span class="reps-label">reps</span>`}
           </button>`;
       };
