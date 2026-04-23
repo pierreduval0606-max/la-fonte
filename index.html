@@ -72,8 +72,8 @@
     .session-banner .progress { font-family: 'SF Mono', ui-monospace, monospace; font-size: 16px; font-weight: 700; }
     .session-banner .progress .done-count { color: var(--accent); }
     .session-banner .progress .pct { font-size: 11px; color: var(--muted); font-weight: 600; margin-left: 6px; }
-    .rest-chrono { font-size: 10px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; letter-spacing: 0.1em; margin-top: 3px; min-height: 14px; }
-    .rest-chrono.active { color: var(--accent-dim); }
+    .rest-chrono { font-size: 10px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; letter-spacing: 0.1em; margin-top: 3px; min-height: 18px; transition: color 0.2s, font-size 0.2s; }
+    .rest-chrono.active { color: var(--accent); font-size: 14px; font-weight: 800; letter-spacing: 0.04em; }
 
     /* Protein tracker */
     .protein-header { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
@@ -100,8 +100,8 @@
     .meal-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
     .meal-prot-planned { font-family: 'SF Mono', ui-monospace, monospace; font-size: 10px; color: var(--muted); text-decoration: line-through; }
 
-    .btn-finish { background: var(--accent); border: 1px solid var(--accent); color: #000; padding: 12px 16px; border-radius: 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; font-family: inherit; font-weight: 800; min-height: 48px; white-space: nowrap; flex-shrink: 0; }
-    .btn-finish:active { transform: scale(0.96); opacity: 0.85; }
+    .btn-finish { background: transparent; border: 1.5px solid var(--border); color: var(--muted); padding: 10px 14px; border-radius: 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; font-family: inherit; font-weight: 700; min-height: 44px; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; }
+    .btn-finish:active { background: var(--surface-2); color: var(--accent); border-color: var(--accent); transform: scale(0.96); }
 
     .exercise { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; position: relative; }
     .exercise.complete { border-color: var(--done); }
@@ -131,15 +131,15 @@
     .ex-body { display: none; padding: 0 14px 16px; border-top: 1px solid var(--border); }
     .exercise.open .ex-body { display: block; }
 
-    .ex-note-box { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; margin-top: 14px; font-size: 13px; color: #d1d5db; line-height: 1.55; border-left: 3px solid var(--accent); }
+    .ex-note-box { background: var(--surface-2); border-radius: 10px; padding: 9px 12px; margin-top: 12px; font-size: 12px; color: #a0a0a0; line-height: 1.5; border-left: 2px solid var(--accent-dim); }
 
-    .weight-row { display: flex; align-items: center; gap: 10px; margin: 16px 0 4px; }
+    .weight-row { display: flex; align-items: center; gap: 10px; margin: 12px 0 4px; }
     .weight-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-right: auto; font-weight: 700; }
     .weight-input { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 14px 12px; border-radius: 12px; font-size: 20px; font-weight: 700; font-family: 'SF Mono', ui-monospace, monospace; width: 110px; text-align: center; min-height: 52px; }
     .weight-input:focus { outline: none; border-color: var(--accent); }
     .weight-unit { color: var(--muted); font-size: 14px; font-family: 'SF Mono', ui-monospace, monospace; font-weight: 600; }
 
-    .sets-stepper { display: flex; align-items: center; gap: 12px; margin: 14px 0 4px; }
+    .sets-stepper { display: flex; align-items: center; gap: 12px; margin: 10px 0 4px; }
     .stepper-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; margin-right: auto; }
     .stepper-btn { background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text); width: 44px; height: 44px; border-radius: 10px; font-size: 22px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; line-height: 1; }
     /* FIX: was :active, now :active:not(:disabled) to prevent flash on disabled state */
@@ -607,11 +607,22 @@
     return null;
   }
 
-  // ── Session helpers ───────────────────────────────────────────────────────
-  function hasAnyLoggedSets() {
-    for (const id of dayList) {
-      const lib = getLib(id); if (!lib) continue;
-      const sdata = session[id]; if (!sdata) continue;
+  // Returns true when ALL sets in the last logged session for this exercise
+  // hit the upper bound of targetReps (e.g. "10-12" → 12), signalling it's
+  // time to bump the weight up.
+  function shouldBumpWeight(exId, historyCache, targetReps) {
+    const match = String(targetReps || '').match(/(\d+)\s*$/);
+    if (!match) return false;
+    const upper = parseInt(match[1]);
+    const isLogged = v => v !== null && v !== undefined;
+    for (let i = historyCache.length - 1; i >= 0; i--) {
+      const ex = historyCache[i].exercises.find(e => e.id === exId);
+      if (!ex) continue;
+      const allSets = ex.unilateral
+        ? [...(ex.setsLeft||[]), ...(ex.setsRight||[])].filter(isLogged)
+        : (ex.sets||[]).filter(isLogged);
+      if (!allSets.length) continue;
+      return allSets.every(s => (typeof s === %�����М���̹ɕ�̀�̤�������Ȥ�(�����(����ɕ��ɸ����͔�(���((������R�R �M��ͥ���������̃�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R�R (���չ�ѥ��������1�����M��̠���(������Ȁ�����Ё���������1��Ф��(����������Ё����􁝕�1������쁥������������ѥ�Ք�(����������Ё͑�ф��͔ssion[id]; if (!sdata) continue;
       if (lib.unilateral) {
         if ((sdata.setsLeft  || []).some(v => v !== null && v !== undefined)) return true;
         if ((sdata.setsRight || []).some(v => v !== null && v !== undefined)) return true;
@@ -754,11 +765,7 @@
       const renderSetBtn = (v, i) => {
         const hasData = v !== null && v !== undefined;
         const reps    = hasData ? (typeof v === 'object' ? v.reps : v) : null;
-        const w       = hasData && typeof v === 'object' ? v.weight : null;
-        return `
-          <button class="set-btn ${hasData ? 'done' : ''}" data-set="${i}">
-            <span class="set-num">Set ${i+1}</span>
-            <span class="reps">${hasData ? reps : '-'}</span>
+        const w       = hasData && typeof v === %�����М���عݕ���Ѐ聹ձ��(��������ɕ��ɸ��(�������������ѽ��������͕е�Ѹ�������ф����������耜�􈁑�ф�͕������(������������������������͕е�մ��M�Ѐ������������(������������������������ɕ�̈�������ф���ɕ�s : '-'}</span>
             ${hasData && w !== null ? `<span class="set-weight-info">${w} kg</span>` : `<span class="reps-label">reps</span>`}
           </button>`;
       };
@@ -780,24 +787,27 @@
         setsHTML = `<div class="sets" style="${gridCols}">${sdata.sets.map(renderSetBtn).join('')}</div>`;
       }
 
+      const setsLabel = `<span style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;font-weight:700;margin-top:2px">sets</span>`;
       let pillsHTML;
       if (lib.unilateral) {
-        pillsHTML = `<div style="display:flex;flex-direction:column;gap:3px">
+        pillsHTML = `<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
           <div class="set-pills">${renderPillsRow(sdata.setsLeft)}</div>
           <div class="set-pills">${renderPillsRow(sdata.setsRight)}</div>
+          ${setsLabel}
         </div>`;
       } else {
-        pillsHTML = `<div class="set-pills">${renderPillsRow(sdata.sets)}</div>`;
+        pillsHTML = `<div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><div class="set-pills">${renderPillsRow(sdata.sets)}</div>${setsLabel}</div>`;
       }
 
       // FIX: show last session's performance instead of just current defaults
-      const lastPerf = getLastPerfText(exId, historyCache);
+      const lastPerf  = getLastPerfText(exId, historyCache);
+      const bumpNudge = shouldBumpWeight(exId, historyCache, lib.targetReps);
 
       card.innerHTML = `
         <div class="ex-order">${String(idx+1).padStart(2,'0')}</div>
         <div class="ex-header">
           <div class="ex-title-wrap">
-            <h3 class="ex-title">${lib.name}${tagsHTML}</h3>
+            <h3 class="ex-title">${lib.name}${tagsHTML}${bumpNudge ? '<span class="tag" style="background:var(--done);color:#000;margin-left:2px">⬆ bump</span>' : ''}</h3>
             <div class="ex-last">${sdata.weight} kg · ${lib.targetReps} reps · ${setsCount} sets</div>
             ${lastPerf ? `<div class="ex-last-perf">${lastPerf}</div>` : ''}
           </div>
