@@ -74,6 +74,67 @@
     .session-banner .progress .pct { font-size: 11px; color: var(--muted); font-weight: 600; margin-left: 6px; }
     .rest-chrono { font-size: 10px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; letter-spacing: 0.1em; margin-top: 3px; min-height: 18px; transition: color 0.2s, font-size 0.2s; }
     .rest-chrono.active { color: var(--accent); font-size: 14px; font-weight: 800; letter-spacing: 0.04em; }
+    .rest-chrono.ready { color: var(--done, #22c55e); font-size: 14px; font-weight: 800; animation: restPulse 0.6s ease-in-out 3; }
+    @keyframes restPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+    .pr-badge { background: linear-gradient(135deg, #d4ff3a, #b8e62a) !important; color: #000 !important; font-weight: 800; box-shadow: 0 0 0 1px rgba(212,255,58,0.3); }
+    .rest-config { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 10px 12px; background: var(--surface-2); border-radius: 10px; }
+    .rest-config-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; flex: 1; }
+    .rest-config select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-family: inherit; font-size: 13px; min-height: 36px; }
+    .d-subtabs { display: flex; gap: 4px; padding: 4px; background: var(--surface); border-radius: 10px; margin-bottom: 14px; }
+    .d-subtab { flex: 1; padding: 10px 4px; background: none; border: none; color: var(--muted); font-size: 11px; font-family: inherit; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; border-radius: 7px; cursor: pointer; min-height: 40px; }
+    .d-subtab.on { background: var(--surface-2); color: var(--text); }
+    .d-day-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .d-day-type { font-size: 16px; font-weight: 700; }
+    .d-day-date { font-size: 12px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; }
+    .d-coach-tip { background: var(--surface-2); border-left: 3px solid var(--accent); border-radius: 8px; padding: 10px 12px; margin: 10px 0; font-size: 13px; color: var(--text); line-height: 1.5; }
+    .d-coach-tip-label { font-size: 9px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; margin-bottom: 3px; }
+    .d-mac-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 14px 12px; margin: 12px 0; }
+    .d-mac-row { display: flex; align-items: center; gap: 10px; margin: 6px 0; font-size: 12px; }
+    .d-mac-label { width: 42px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; font-size: 10px; }
+    .d-mac-bar { flex: 1; height: 7px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+    .d-mac-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+    .d-mac-fill.c { background: #f4a261; }
+    .d-mac-fill.f { background: #a892d4; }
+    .d-mac-num { font-size: 11px; color: var(--text); min-width: 70px; text-align: right; font-family: 'SF Mono', ui-monospace, monospace; font-weight: 700; }
+    .d-meals { margin-top: 12px; }
+    .d-meal { display: flex; gap: 10px; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
+    .d-meal.done { background: var(--surface-2); border-color: var(--accent); }
+    .d-meal.over { border-left: 3px solid #f4a261; }
+    .d-meal-time { font-size: 10px; color: var(--muted); font-family: 'SF Mono', ui-monospace, monospace; min-width: 36px; padding-top: 2px; font-weight: 700; }
+    .d-meal-body { flex: 1; min-width: 0; }
+    .d-meal-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .d-meal-detail { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
+    .d-meal-carb { font-size: 10px; color: #f4a261; margin-top: 4px; line-height: 1.4; }
+    .d-meal-mac { font-size: 11px; color: var(--accent); margin-top: 4px; font-family: 'SF Mono', ui-monospace, monospace; font-weight: 700; letter-spacing: 0.02em; }
+    .d-meal-actions { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
+    .d-meal-check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; color: transparent; font-weight: 700; }
+    .d-meal.done .d-meal-check { background: var(--accent); border-color: var(--accent); color: #000; }
+    .d-meal-edit { background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); padding: 4px 8px; font-size: 11px; cursor: pointer; font-family: inherit; min-height: 28px; }
+    .d-week-summary { font-size: 12px; color: var(--muted); padding: 10px 12px; background: var(--surface-2); border-radius: 8px; margin-bottom: 10px; line-height: 1.5; }
+    .d-week-summary b { color: var(--text); font-weight: 700; }
+    .d-week-row { display: grid; grid-template-columns: 50px 1fr auto; gap: 10px; align-items: center; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; }
+    .d-week-row.on { border-color: var(--accent); background: var(--surface-2); }
+    .d-week-day { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .d-week-row.on .d-week-day { color: var(--accent); }
+    .d-week-type { font-size: 12px; color: var(--text); font-weight: 600; }
+    .d-week-mac { display: flex; gap: 6px; font-size: 10px; font-family: 'SF Mono', ui-monospace, monospace; color: var(--text); font-weight: 700; }
+    .d-week-mac span { background: var(--surface-2); padding: 3px 6px; border-radius: 4px; }
+    .d-shop-intro { font-size: 12px; color: var(--muted); padding: 10px 12px; background: var(--surface-2); border-radius: 8px; margin-bottom: 12px; line-height: 1.5; }
+    .d-shop-cat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+    .d-shop-cat-name { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; margin-bottom: 8px; }
+    .d-shop-item { font-size: 12px; color: var(--text); padding: 5px 0; border-top: 1px solid var(--border); }
+    .d-shop-item:first-of-type { border-top: none; }
+    .d-rule { display: flex; gap: 12px; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; }
+    .d-rule-num { font-size: 18px; font-weight: 800; color: var(--accent); font-family: 'SF Mono', ui-monospace, monospace; min-width: 28px; }
+    .d-rule-body { flex: 1; }
+    .d-rule-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .d-rule-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .d-avoid-card { background: #2a1414; border: 1px solid #4a2020; border-radius: 10px; padding: 14px; margin-top: 14px; }
+    .d-avoid-title { font-size: 11px; color: #d47878; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; margin-bottom: 10px; }
+    .d-avoid-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .d-avoid-chip { background: #1a0c0c; border: 1px solid #4a2020; color: #d47878; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; text-transform: capitalize; }
+    .d-avoid-note { font-size: 11px; color: #d47878; margin-top: 10px; line-height: 1.5; opacity: 0.85; }
+    .rest-skip { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 4px 10px; font-size: 11px; font-family: inherit; cursor: pointer; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
 
     /* Protein tracker */
     .protein-header { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
@@ -459,91 +520,150 @@
 
   // ── Rest chrono (counts up after each set, resets on next set) ────────────
   let _restInterval = null;
-  let _restStartedAt = null;
-  function startRestChrono() {
+  let _restEndsAt = null;
+  let _restAlerted = false;
+  function _playBeep() {
+    try {
+      const ac = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'sine'; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.001, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.55);
+      o.connect(g); g.connect(ac.destination);
+      o.start(); o.stop(ac.currentTime + 0.6);
+      setTimeout(() => ac.close(), 800);
+    } catch(e) {}
+  }
+  function startRestChrono(restSec) {
+    restSec = Math.max(5, parseInt(restSec || 90, 10));
     clearInterval(_restInterval);
-    _restStartedAt = Date.now();
+    _restEndsAt = Date.now() + restSec * 1000;
+    _restAlerted = false;
     const el = document.getElementById('restChrono');
     if (!el) return;
+    el.classList.remove('ready');
     el.classList.add('active');
     const tick = () => {
-      if (!_restStartedAt) return;
-      const s = Math.floor((Date.now() - _restStartedAt) / 1000);
-      el.textContent = `Rest: ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+      if (!_restEndsAt) return;
+      const remaining = Math.max(0, Math.ceil((_restEndsAt - Date.now()) / 1000));
+      if (remaining === 0) {
+        if (!_restAlerted) {
+          _restAlerted = true;
+          el.textContent = 'Ready ✓';
+          el.classList.add('ready');
+          if (navigator.vibrate) try { navigator.vibrate([180, 90, 180, 90, 180]); } catch(e) {}
+          _playBeep();
+          clearInterval(_restInterval);
+          setTimeout(() => {
+            const cur = document.getElementById('restChrono');
+            if (cur && cur.classList.contains('ready')) {
+              cur.classList.remove('ready', 'active');
+              cur.textContent = '';
+            }
+          }, 6000);
+        }
+      } else {
+        el.textContent = `Rest: ${Math.floor(remaining/60)}:${String(remaining%60).padStart(2,'0')}`;
+      }
     };
     tick();
-    _restInterval = setInterval(tick, 1000);
+    _restInterval = setInterval(tick, 250);
   }
   function stopRestChrono() {
-    clearInterval(_restInterval); _restInterval = null; _restStartedAt = null;
+    clearInterval(_restInterval); _restInterval = null; _restEndsAt = null; _restAlerted = false;
     const el = document.getElementById('restChrono');
-    if (el) { el.classList.remove('active'); el.textContent = ''; }
+    if (el) { el.classList.remove('active', 'ready'); el.textContent = ''; }
   }
 
   // ── Protein plans ─────────────────────────────────────────────────────────
   // Keyed by JS getDay() 0=Sun 1=Mon … 6=Sat
+  // DIET PLAN V2 — full P/C/F per meal, carb sources called out by source + portion + cooked/dry.
+  // Pasta intentionally excluded (cut-incompatible). Carbs land on training days, lower on rest.
   const PROTEIN_PLANS = {
-    1: { type: 'Gym morning', target: 255, meals: [
-      { id: 'm0', time: '7:30',  label: 'Pre-gym snack', detail: 'Skyr 150g + banana', protein: 15 },
-      { id: 'm1', time: '10:35', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
-      { id: 'm2', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
-      { id: 'm3', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
-      { id: 'm4', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
-      { id: 'm5', time: '19:00', label: 'Dinner', detail: 'Tofu stir-fry — 300g tofu + 150g edamame + rice + wok veg', protein: 55 },
-      { id: 'm6', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    1: { type: 'Gym morning', target: { p: 250, c: 310, f: 75 }, note: 'Carbs front-loaded around training', meals: [
+      { id:'m0', time:'7:30',  label:'Pre-gym',         detail:'Skyr 150g + banana 120g + 1 tbsp honey',                                       carbs:'banana 120g + honey 15g',                       p:15, c:30, f:1 },
+      { id:'m1', time:'10:35', label:'Post-gym shake',  detail:'Whey 30g + 250ml semi-skim milk + banana 120g',                                carbs:'banana + milk lactose',                         p:36, c:32, f:5 },
+      { id:'m2', time:'11:00', label:'Breakfast',       detail:'Skyr 200g + oats 50g + berries 100g',                                          carbs:'oats 50g (dry) + berries',                      p:35, c:40, f:4 },
+      { id:'m3', time:'13:00', label:'Lunch',           detail:'2 cans tuna + sweet potato 250g + cottage 100g + spinach + lemon',             carbs:'sweet potato 250g (cooked)',                    p:55, c:50, f:9 },
+      { id:'m4', time:'16:00', label:'Snack',           detail:'Cottage 200g + 1 slice wholegrain + 1 apple',                                  carbs:'wholegrain bread 1 slice + apple',              p:30, c:35, f:3 },
+      { id:'m5', time:'19:00', label:'Dinner',          detail:'Tofu 300g + edamame 150g + white rice 80g (dry) + wok veg + sesame oil',       carbs:'white rice 80g dry (~240g cooked)',             p:55, c:75, f:18 },
+      { id:'m6', time:'21:30', label:'Evening',         detail:'Skyr 250g + cinnamon + 25g almonds',                                           carbs:'minimal',                                       p:25, c:8,  f:15 },
     ]},
-    2: { type: 'Running morning', target: 218, meals: [
-      { id: 't1', time: '8:15',  label: 'Pre-run snack', detail: 'Skyr 150g + banana', protein: 15 },
-      { id: 't2', time: '10:45', label: 'Post-run shake', detail: '1 Nutripure scoop (at home) + 300ml water', protein: 25 },
-      { id: 't3', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
-      { id: 't4', time: '13:00', label: 'Lunch', detail: 'Skyr 200g + 3 hard-boiled eggs + crackers + cucumber', protein: 38 },
-      { id: 't5', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
-      { id: 't6', time: '19:00', label: 'Dinner', detail: 'Shakshuka — 4 eggs + tomato + 150g cottage', protein: 50 },
-      { id: 't7', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    2: { type: 'Run · intervals', target: { p: 230, c: 340, f: 75 }, note: 'Pre-run needs ~60g carbs (old plan had ~25g — bonk risk)', meals: [
+      { id:'t0', time:'7:45',  label:'Pre-run',          detail:'Skyr 150g + banana 120g + oats 40g + 1 tbsp honey',                            carbs:'banana + oats 40g (dry) + honey 15g (~60g)',    p:18, c:62, f:2 },
+      { id:'t1', time:'10:30', label:'Post-run recovery',detail:'Nutripure whey scoop + banana + 1 slice sourdough w/ honey',                   carbs:'sourdough 1 slice + banana + honey',            p:25, c:50, f:2 },
+      { id:'t2', time:'11:30', label:'Breakfast',        detail:'Skyr 250g + berries 100g + 30g granola',                                       carbs:'granola 30g + berries',                         p:30, c:35, f:5 },
+      { id:'t3', time:'13:00', label:'Lunch',            detail:'Skyr 200g + 3 hard-boiled eggs + crackers 30g + cucumber + cherry tomatoes',  carbs:'crackers 30g + veg',                            p:38, c:25, f:14 },
+      { id:'t4', time:'16:00', label:'Snack',            detail:'Cottage 200g + 1 slice wholegrain + grapes',                                  carbs:'wholegrain 1 slice + grapes',                   p:30, c:35, f:3 },
+      { id:'t5', time:'19:00', label:'Dinner',           detail:'Shakshuka — 4 eggs + 1 can crushed tomato + cottage 150g + sweet potato 200g',carbs:'sweet potato 200g (cooked) + tomato',           p:62, c:55, f:22 },
+      { id:'t6', time:'21:30', label:'Evening',          detail:'Skyr 250g + cinnamon',                                                         carbs:'minimal',                                       p:25, c:8,  f:0 },
     ]},
-    3: { type: 'Gym morning', target: 250, meals: [
-      { id: 'w0', time: '7:30',  label: 'Pre-gym snack', detail: 'Skyr 150g + banana', protein: 15 },
-      { id: 'w1', time: '10:35', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
-      { id: 'w2', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
-      { id: 'w3', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Lentil Bowl (1 can tuna + 100g rice + 200g lentils + 100g cottage)', protein: 55 },
-      { id: 'w4', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
-      { id: 'w5', time: '19:00', label: 'Dinner', detail: 'Chickpea curry — 2 cans chickpeas + coconut milk + 200g Skyr', protein: 50 },
-      { id: 'w6', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    3: { type: 'Gym morning', target: { p: 250, c: 295, f: 78 }, note: 'Beyond Meat dinner ⭐', meals: [
+      { id:'w0', time:'7:30',  label:'Pre-gym',         detail:'Skyr 150g + banana 120g + 1 tbsp honey',                                       carbs:'banana + honey 15g',                            p:15, c:30, f:1 },
+      { id:'w1', time:'10:35', label:'Post-gym shake',  detail:'Whey 30g + 250ml semi-skim milk + banana 120g',                                carbs:'banana + milk',                                 p:36, c:32, f:5 },
+      { id:'w2', time:'11:00', label:'Breakfast',       detail:'Skyr 200g + oats 50g + berries 100g',                                          carbs:'oats 50g (dry) + berries',                      p:35, c:40, f:4 },
+      { id:'w3', time:'13:00', label:'Lunch',           detail:'1 can tuna + lentils 200g (cooked) + cottage 100g + sweet potato 200g + lemon',carbs:'lentils 200g (cooked) + sweet potato 200g',     p:50, c:60, f:6 },
+      { id:'w4', time:'16:00', label:'Snack',           detail:'Cottage 200g + 1 slice wholegrain + apple',                                    carbs:'wholegrain 1 slice + apple',                    p:30, c:35, f:3 },
+      { id:'w5', time:'19:00', label:'Dinner ⭐',       detail:'2 Beyond Meat patties + sweet potato 250g + roasted broccoli/courgette',       carbs:'sweet potato 250g (cooked)',                    p:50, c:50, f:42 },
+      { id:'w6', time:'21:30', label:'Evening',         detail:'Skyr 250g + cinnamon + 20g almonds',                                           carbs:'minimal',                                       p:25, c:8,  f:12 },
     ]},
-    4: { type: 'Gym morning', target: 255, meals: [
-      { id: 'th0', time: '7:30',  label: 'Pre-gym snack', detail: 'Skyr 150g + banana', protein: 15 },
-      { id: 'th1', time: '10:35', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
-      { id: 'th2', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
-      { id: 'th3', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
-      { id: 'th4', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
-      { id: 'th5', time: '19:00', label: 'Dinner', detail: 'Tofu stir-fry — 300g tofu + 150g edamame + rice + wok veg', protein: 55 },
-      { id: 'th6', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    4: { type: 'Gym morning', target: { p: 250, c: 305, f: 75 }, meals: [
+      { id:'th0', time:'7:30',  label:'Pre-gym',         detail:'Skyr 150g + banana 120g + 1 tbsp honey',                                      carbs:'banana + honey 15g',                            p:15, c:30, f:1 },
+      { id:'th1', time:'10:35', label:'Post-gym shake',  detail:'Whey 30g + 250ml semi-skim milk + banana 120g',                               carbs:'banana + milk',                                 p:36, c:32, f:5 },
+      { id:'th2', time:'11:00', label:'Breakfast',       detail:'Skyr 200g + oats 50g + berries 100g',                                         carbs:'oats 50g (dry) + berries',                      p:35, c:40, f:4 },
+      { id:'th3', time:'13:00', label:'Lunch',           detail:'2 cans tuna + sweet potato 250g + cottage 100g + spinach + lemon',            carbs:'sweet potato 250g (cooked)',                    p:55, c:50, f:9 },
+      { id:'th4', time:'16:00', label:'Snack',           detail:'Cottage 200g + 1 slice wholegrain + 1 orange',                                carbs:'wholegrain 1 slice + orange',                   p:30, c:30, f:3 },
+      { id:'th5', time:'19:00', label:'Dinner',          detail:'Tofu 300g + edamame 150g + white rice 80g (dry) + wok veg + sesame oil',      carbs:'white rice 80g dry (~240g cooked)',             p:55, c:75, f:18 },
+      { id:'th6', time:'21:30', label:'Evening',         detail:'Skyr 250g + cinnamon + 25g almonds',                                          carbs:'minimal',                                       p:25, c:8,  f:15 },
     ]},
-    5: { type: 'Running morning', target: 235, meals: [
-      { id: 'f1', time: '8:15',  label: 'Pre-run snack', detail: 'Skyr 150g + banana', protein: 15 },
-      { id: 'f2', time: '10:45', label: 'Post-run shake', detail: '1 Nutripure scoop (at home) + 300ml water', protein: 25 },
-      { id: 'f3', time: '11:00', label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
-      { id: 'f4', time: '13:00', label: 'Lunch', detail: 'Skyr 200g + 3 hard-boiled eggs + crackers + cucumber', protein: 38 },
-      { id: 'f5', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
-      { id: 'f6', time: '19:00', label: 'Dinner', detail: 'Salmon or tuna + rice + roasted veg', protein: 67 },
-      { id: 'f7', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    5: { type: 'Run · intervals', target: { p: 235, c: 350, f: 80 }, note: 'Pre-run carb upgrade required', meals: [
+      { id:'f0', time:'7:45',  label:'Pre-run',          detail:'Skyr 150g + banana 120g + oats 40g + 1 tbsp honey',                            carbs:'banana + oats 40g (dry) + honey 15g',           p:18, c:62, f:2 },
+      { id:'f1', time:'10:30', label:'Post-run recovery',detail:'Nutripure whey scoop + banana + 1 slice sourdough w/ honey',                   carbs:'sourdough 1 slice + banana + honey',            p:25, c:50, f:2 },
+      { id:'f2', time:'11:30', label:'Breakfast',        detail:'Skyr 250g + berries 100g + 30g granola',                                       carbs:'granola 30g + berries',                         p:30, c:35, f:5 },
+      { id:'f3', time:'13:00', label:'Lunch',            detail:'Skyr 200g + 3 hard-boiled eggs + crackers 30g + cucumber',                     carbs:'crackers 30g',                                  p:38, c:25, f:14 },
+      { id:'f4', time:'16:00', label:'Snack',            detail:'Cottage 200g + 1 slice wholegrain + apple',                                    carbs:'wholegrain 1 slice + apple',                    p:30, c:35, f:3 },
+      { id:'f5', time:'19:00', label:'Dinner',           detail:'Salmon 150g + white rice 80g (dry) + roasted veg + olive oil',                 carbs:'white rice 80g dry (~240g cooked)',             p:42, c:75, f:24 },
+      { id:'f6', time:'21:30', label:'Evening',          detail:'Skyr 250g + cinnamon',                                                         carbs:'minimal',                                       p:25, c:8,  f:0 },
     ]},
-    6: { type: 'Rest day', target: 230, meals: [
-      { id: 's1', time: '9:00',  label: 'Breakfast + Nutripure', detail: 'Skyr 300g + oats 40g + 1 Nutripure scoop', protein: 60 },
-      { id: 's2', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
-      { id: 's3', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
-      { id: 's4', time: '19:00', label: 'Dinner', detail: 'Chickpea curry — 2 cans chickpeas + coconut milk + 200g Skyr', protein: 60 },
-      { id: 's5', time: '21:30', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    6: { type: 'Rest day', target: { p: 230, c: 250, f: 85 }, note: 'Lower carbs · slightly higher fat for hormones', meals: [
+      { id:'s0', time:'9:00',  label:'Breakfast + Nutripure', detail:'Skyr 300g + oats 40g + berries 100g + 1 Nutripure scoop',                  carbs:'oats 40g (dry) + berries',                      p:60, c:40, f:5 },
+      { id:'s1', time:'13:00', label:'Lunch',                 detail:'2 cans tuna + sweet potato 200g + cottage 100g + green salad + olive oil',carbs:'sweet potato 200g (cooked)',                    p:55, c:40, f:14 },
+      { id:'s2', time:'16:00', label:'Snack',                 detail:'Cottage 200g + 1 slice wholegrain + apple + 15g walnuts',                 carbs:'wholegrain 1 slice + apple',                    p:30, c:35, f:14 },
+      { id:'s3', time:'19:00', label:'Dinner',                detail:'Chickpea curry — 2 cans chickpeas + light coconut 200ml + Skyr 200g + cauliflower rice', carbs:'chickpeas 2 cans (cooked) + cauliflower rice', p:60, c:65, f:22 },
+      { id:'s4', time:'21:30', label:'Evening',               detail:'Skyr 250g + cinnamon + 25g almonds',                                       carbs:'minimal',                                       p:25, c:8,  f:15 },
     ]},
-    0: { type: 'Gym evening', target: 215, meals: [
-      { id: 'su1', time: '9:00',  label: 'Breakfast', detail: 'Skyr 300g + oats 40g + berries 100g', protein: 35 },
-      { id: 'su2', time: '13:00', label: 'Lunch', detail: 'Tuna-Rice-Cottage Bowl (2 cans tuna + 100g rice + 100g cottage)', protein: 55 },
-      { id: 'su3', time: '16:00', label: 'Afternoon snack', detail: 'Cottage 200g + 2 slices wholegrain bread', protein: 30 },
-      { id: 'su4', time: '19:30', label: 'Pre-workout snack', detail: 'Skyr 150g + banana (light fuel before evening gym)', protein: 15 },
-      { id: 'su5', time: '21:30', label: 'Post-gym shake', detail: 'Gym shake — plain protein + water/milk', protein: 40 },
-      { id: 'su6', time: '22:00', label: 'Evening snack', detail: 'Skyr 250g + cinnamon', protein: 25 },
+    0: { type: 'Gym evening', target: { p: 220, c: 290, f: 75 }, note: 'Carbs concentrated late afternoon/evening', meals: [
+      { id:'su0', time:'9:00',  label:'Breakfast',       detail:'Skyr 300g + oats 40g + berries 100g',                                          carbs:'oats 40g (dry) + berries',                      p:35, c:40, f:4 },
+      { id:'su1', time:'13:00', label:'Lunch',           detail:'2 cans tuna + white rice 80g (dry) + cottage 100g + spinach + olive oil',      carbs:'white rice 80g dry (~240g cooked)',             p:55, c:65, f:8 },
+      { id:'su2', time:'16:00', label:'Snack',           detail:'Cottage 200g + 1 slice wholegrain + apple',                                    carbs:'wholegrain 1 slice + apple',                    p:30, c:35, f:3 },
+      { id:'su3', time:'19:00', label:'Pre-gym',         detail:'Skyr 150g + banana 120g + 1 tbsp honey',                                       carbs:'banana + honey 15g',                            p:15, c:30, f:1 },
+      { id:'su4', time:'21:30', label:'Post-gym shake',  detail:'Whey 30g + 250ml milk + banana',                                               carbs:'banana + milk',                                 p:36, c:32, f:5 },
+      { id:'su5', time:'22:00', label:'Evening (light)', detail:'Skyr 250g + cinnamon',                                                         carbs:'minimal',                                       p:25, c:8,  f:0 },
     ]},
   };
+
+  const SHOPPING_LIST = [
+    { cat: 'Dairy',         items: ['Skyr 0% — 2.5 kg/wk','Cottage cheese 0–2% — 1.4 kg/wk','Semi-skim milk — 1.5 L/wk'] },
+    { cat: 'Protein',       items: ['Tofu firm — 900g','Edamame frozen — 450g','Eggs — ~14','Tuna in water — 9 cans','Salmon fillet — 150g (Fri)','Beyond Meat — 2 patties (Wed)','Whey (Nutripure + gym)','Lentils — 1 can or 100g dry','Chickpeas — 2 cans','Almonds 100g + walnuts 15g'] },
+    { cat: 'Carbs',         items: ['Sweet potatoes — 1.7 kg (4–5 medium)','White rice — 320g dry','Oats — 270g','Wholegrain bread — small loaf','Sourdough — 2 slices','Bananas — 12','Berries — 700g (frozen ok)','Apples — 5','Honey — small jar'] },
+    { cat: 'Veg',           items: ['Spinach, broccoli, courgette, wok veg, cucumber, cherry tomatoes','1 can crushed tomatoes (Tue shakshuka)'] },
+    { cat: 'Fats / extras', items: ['Olive oil, sesame oil, light coconut milk','Cinnamon, lemons, garlic, pepper'] },
+  ];
+
+  const KEY_RULES = [
+    { title: 'Pre-run carb upgrade (Tue/Fri)',     body: '~60g carbs before intervals or you bonk. Old plan had only 25g — that is why your pace slipped.' },
+    { title: 'Sweet potato 4×/week',                body: 'Highest satiety carb. Microwave-bake 4 medium on Sunday (8–10 min on high), reheat 90s. Done for the week.' },
+    { title: 'No "free" oils or nut butters',       body: '1 tbsp olive oil ≈ 120 kcal. Almonds and oils above are calculated; adding more pushes you out of deficit.' },
+    { title: 'No alcohol Tue/Fri evenings',         body: 'Recovery from intense intervals matters more than people realize. Other nights, moderation is fine.' },
+    { title: 'Weigh once per week',                  body: 'Sat morning fasted, post-toilet. Daily fluctuations will mess with you. Expect 0.3–0.5 kg/wk loss. If flat for 3 weeks → cut 100g carbs/day.' },
+    { title: 'Plan averages 2,580 kcal/day',         body: '~235P / 305C / 78F. Hit portions, do not count calories — it works.' },
+  ];
+
+  const CARB_AVOID_ON_CUT = ['pasta', 'fries', 'fried rice', 'sugary drinks', 'pastry', 'cookies', 'free oils beyond plan'];
+
+  let _proteinSubtab = 'today';
+
 
   // ── Toast ─────────────────────────────────────────────────────────────────
   function toast(msg, type = 'normal') {
@@ -581,6 +701,39 @@
       sets.forEach(s => { if (s && typeof s === 'object' && s.reps && s.weight) vol += s.reps * s.weight; });
     });
     return Math.round(vol);
+  }
+
+  // ── PR detection (Epley estimated 1RM) ────────────────────────────────────
+  function _epley(s) {
+    if (!s || typeof s !== 'object' || s.weight == null || s.reps == null) return 0;
+    return s.weight * (1 + s.reps / 30);
+  }
+  function _bestSet(arr) {
+    let best = null;
+    (arr || []).forEach(s => {
+      const score = _epley(s);
+      if (score > 0 && (!best || score > best.score)) best = { reps: s.reps, weight: s.weight, score };
+    });
+    return best;
+  }
+  function getPersonalBest(exId, historyCache) {
+    let best = null;
+    historyCache.forEach(sess => {
+      sess.exercises.forEach(ex => {
+        if (ex.id !== exId) return;
+        const candidates = [_bestSet(ex.sets), _bestSet(ex.setsLeft), _bestSet(ex.setsRight)];
+        candidates.forEach(c => { if (c && (!best || c.score > best.score)) best = c; });
+      });
+    });
+    return best;
+  }
+  function getSessionBest(sdata, lib) {
+    if (lib.unilateral) {
+      const l = _bestSet(sdata.setsLeft), r = _bestSet(sdata.setsRight);
+      if (!l && !r) return null;
+      return (l && (!r || l.score > r.score)) ? l : r;
+    }
+    return _bestSet(sdata.sets);
   }
 
   // ── Last performance lookup ───────────────────────────────────────────────
@@ -815,12 +968,17 @@
       // FIX: show last session's performance instead of just current defaults
       const lastPerf  = getLastPerfText(exId, historyCache);
       const bumpNudge = shouldBumpWeight(exId, historyCache, lib.targetReps);
+      const pb        = getPersonalBest(exId, historyCache);
+      const sb        = getSessionBest(sdata, lib);
+      const isPR      = sb && (!pb || sb.score > pb.score + 0.01);
+      const prBadge   = isPR ? `<span class="tag pr-badge">PR ↑ ${sb.weight}kg × ${sb.reps}</span>` : '';
+      const restSec   = lib.restSec || 90;
 
       card.innerHTML = `
         <div class="ex-order">${String(idx+1).padStart(2,'0')}</div>
         <div class="ex-header">
           <div class="ex-title-wrap">
-            <h3 class="ex-title">${lib.name}${tagsHTML}${bumpNudge ? '<span class="tag" style="background:var(--done);color:#000;margin-left:2px">⬆ bump</span>' : ''}</h3>
+            <h3 class="ex-title">${lib.name}${tagsHTML}${prBadge}${bumpNudge ? '<span class="tag" style="background:var(--done);color:#000;margin-left:2px">⬆ bump</span>' : ''}</h3>
             <div class="ex-last">${sdata.weight} kg · ${lib.targetReps} reps · ${setsCount} sets</div>
             ${lastPerf ? `<div class="ex-last-perf">${lastPerf}</div>` : ''}
           </div>
@@ -838,6 +996,12 @@
             <button class="stepper-btn" data-role="sets-minus" ${setsCount<=1?'disabled':''}>−</button>
             <span class="stepper-value">${setsCount}</span>
             <button class="stepper-btn" data-role="sets-plus"  ${setsCount>=8?'disabled':''}>+</button>
+          </div>
+          <div class="rest-config">
+            <span class="rest-config-label">Rest after set</span>
+            <select data-role="rest">
+              ${[60,90,120,180].map(s => `<option value="${s}" ${restSec===s?'selected':''}>${s<60?s+'s':(Math.floor(s/60)+(s%60?':'+String(s%60).padStart(2,'0'):' min'))}</option>`).join('')}
+            </select>
           </div>
           <div class="sets-instruction">Tap a set · enter reps × weight</div>
           ${setsHTML}
@@ -963,7 +1127,7 @@
           }
           saveSession();
           haptic();
-          startRestChrono();
+          startRestChrono(lib.restSec || 90);
           renderExercises();
           const reopen = document.querySelector(`.exercise[data-id="${exId}"]`);
           if (reopen) reopen.classList.add('open');
@@ -1033,7 +1197,21 @@
     });
 
     // Remove exercise
-    card.querySelector('[data-role="remove"]').addEventListener('click', e => {
+    const restSel = card.querySelector('[data-role="rest"]');
+    if (restSel) {
+      restSel.addEventListener('click', e => e.stopPropagation());
+      restSel.addEventListener('change', () => {
+        const v = parseInt(restSel.value, 10);
+        if (!isNaN(v)) {
+          lib.restSec = v;
+          library = library.map(x => x.id === lib.id ? { ...x, restSec: v } : x);
+          saveJSON('library_v6', library);
+          toast(`Rest set to ${v}s`);
+        }
+      });
+    }
+
+        card.querySelector('[data-role="remove"]').addEventListener('click', e => {
       e.stopPropagation();
       confirmModal('Remove exercise', `Remove "${lib.name}" from today's session?`, () => {
         dayList = dayList.filter(id => id !== exId);
@@ -1616,135 +1794,219 @@
   }
 
   function renderProtein() {
-    const root    = document.getElementById('mainContent');
-    const today   = new Date();
-    const dow     = today.getDay();
+    const root = document.getElementById('mainContent');
+    const today = new Date();
+    const dow = today.getDay();
     const dateKey = today.toISOString().slice(0, 10);
-    const plan    = PROTEIN_PLANS[dow];
+    const plan = PROTEIN_PLANS[dow];
+    const target = (plan.target && typeof plan.target === 'object') ? plan.target : { p: plan.target || 0, c: 0, f: 0 };
+
+    // Migrate per-meal note shape: legacy {text, protein} → {text, p, c, f}
+    function migrateNotes(obj) {
+      const out = {};
+      Object.keys(obj || {}).forEach(k => {
+        const n = obj[k] || {};
+        if (n.p === undefined && n.protein !== undefined) {
+          out[k] = { text: n.text || '', p: n.protein || 0, c: n.c || 0, f: n.f || 0 };
+        } else {
+          out[k] = { text: n.text || '', p: n.p || 0, c: n.c || 0, f: n.f || 0 };
+        }
+      });
+      return out;
+    }
+
+    function getTotals(plan, checked, notes) {
+      let p = 0, c = 0, f = 0;
+      plan.meals.forEach(m => {
+        if (!checked.includes(m.id)) return;
+        const n = notes[m.id];
+        if (n) { p += n.p || 0; c += n.c || 0; f += n.f || 0; }
+        else { p += m.p || 0; c += m.c || 0; f += m.f || 0; }
+      });
+      return { p, c, f };
+    }
+
+    function macroBars(eaten, tgt) {
+      const row = (label, e, t, cls) => {
+        const pct = t ? Math.min(100, Math.round(e / t * 100)) : 0;
+        return `<div class="d-mac-row">
+          <div class="d-mac-label">${label}</div>
+          <div class="d-mac-bar"><div class="d-mac-fill ${cls}" style="width:${pct}%"></div></div>
+          <div class="d-mac-num">${Math.round(e)} / ${t}g</div>
+        </div>`;
+      };
+      return `<div class="d-mac-card">
+        ${row('Prot', eaten.p, tgt.p, 'p')}
+        ${row('Carb', eaten.c, tgt.c, 'c')}
+        ${row('Fat',  eaten.f, tgt.f, 'f')}
+      </div>`;
+    }
+
+    function getCoachTip(dow) {
+      if (dow === 2 || dow === 5) return 'Pre-run today needs ~60g carbs (banana + 40g oats + honey). Hitting only 25g = bonk on intervals.';
+      if (dow === 6) return 'Rest day: lower carbs, slightly more fat (almonds, olive oil) for hormones.';
+      if (dow === 0) return 'Gym is tonight — carbs concentrated afternoon/evening, lighter fat at night.';
+      return 'Gym day — carbs front-loaded around training. Sweet potato is your friend.';
+    }
+
+    function renderTodayView(plan, target, dow, dateKey, checked, notes) {
+      const eaten = getTotals(plan, checked, notes);
+      const dateStr = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const mealsHTML = plan.meals.map(m => {
+        const done = checked.includes(m.id);
+        const note = notes[m.id];
+        const dispP = note ? note.p : m.p;
+        const dispC = note ? note.c : m.c;
+        const dispF = note ? note.f : m.f;
+        return `<div class="d-meal ${done ? 'done' : ''} ${note ? 'over' : ''}" data-meal="${m.id}">
+          <div class="d-meal-time">${m.time}</div>
+          <div class="d-meal-body">
+            <div class="d-meal-name">${m.label}</div>
+            <div class="d-meal-detail">${note ? note.text : m.detail}</div>
+            ${(!note && m.carbs) ? `<div class="d-meal-carb">Carbs: ${m.carbs}</div>` : ''}
+            <div class="d-meal-mac">${dispP}P · ${dispC}C · ${dispF}F${note ? ' ✎' : ''}</div>
+          </div>
+          <div class="d-meal-actions">
+            <div class="d-meal-check">${done ? '✓' : ''}</div>
+            <button class="d-meal-edit" data-edit-meal="${m.id}" title="Log what you actually had">✎</button>
+          </div>
+        </div>`;
+      }).join('');
+      return `
+        <div class="d-day-header">
+          <div class="d-day-type">${plan.type}</div>
+          <div class="d-day-date">${dateStr}</div>
+        </div>
+        ${plan.note ? `<div class="d-coach-tip"><div class="d-coach-tip-label">Coach</div><div>${plan.note}</div></div>` : ''}
+        ${macroBars(eaten, target)}
+        <div class="d-meals">${mealsHTML}</div>
+        <div class="d-coach-tip"><div class="d-coach-tip-label">Tip</div><div>${getCoachTip(dow)}</div></div>
+        <button class="btn-action primary" id="logDietDayBtn" style="width:100%;margin-top:14px">Log day</button>
+        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px">Diet log</div>
+          ${renderDietHistorySection()}
+        </div>`;
+    }
+
+    function renderWeekView() {
+      const dayLabels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const order = [1,2,3,4,5,6,0];
+      const rows = order.map(d => {
+        const p = PROTEIN_PLANS[d];
+        const t = (p.target && typeof p.target === 'object') ? p.target : { p: p.target || 0, c: 0, f: 0 };
+        const isToday = d === dow;
+        return `<div class="d-week-row ${isToday ? 'on' : ''}">
+          <div class="d-week-day">${dayLabels[d]}</div>
+          <div class="d-week-type">${p.type}</div>
+          <div class="d-week-mac"><span>${t.p}P</span><span>${t.c}C</span><span>${t.f}F</span></div>
+        </div>`;
+      }).join('');
+      return `<div class="d-week-wrap">
+        <div class="d-week-summary">Average: <b>~235P · 305C · 78F</b> · ~2,580 kcal/day · cut to 102 kg over 3 months</div>
+        ${rows}
+      </div>`;
+    }
+
+    function renderShopView() {
+      return `<div class="d-shop-intro">Weekly shopping list — quantities feed all 7 days at the planned macros.</div>` +
+        SHOPPING_LIST.map(g => `
+          <div class="d-shop-cat">
+            <div class="d-shop-cat-name">${g.cat}</div>
+            ${g.items.map(it => `<div class="d-shop-item">${it}</div>`).join('')}
+          </div>`).join('');
+    }
+
+    function renderRulesView() {
+      const rulesHTML = KEY_RULES.map((r, i) => `
+        <div class="d-rule">
+          <div class="d-rule-num">${String(i+1).padStart(2,'0')}</div>
+          <div class="d-rule-body">
+            <div class="d-rule-title">${r.title}</div>
+            <div class="d-rule-text">${r.body}</div>
+          </div>
+        </div>`).join('');
+      const avoidHTML = CARB_AVOID_ON_CUT.map(x => `<span class="d-avoid-chip">${x}</span>`).join('');
+      return `<div>
+        ${rulesHTML}
+        <div class="d-avoid-card">
+          <div class="d-avoid-title">Avoid on cut</div>
+          <div class="d-avoid-row">${avoidHTML}</div>
+          <div class="d-avoid-note">These don't appear in the plan for a reason — pasta and fried carbs are too calorically dense for a cut at 107 → 102 kg.</div>
+        </div>
+      </div>`;
+    }
+
+    const subtabs = `
+      <div class="d-subtabs">
+        <button class="d-subtab ${_proteinSubtab==='today'?'on':''}" data-st="today">Today</button>
+        <button class="d-subtab ${_proteinSubtab==='week'?'on':''}"  data-st="week">Week</button>
+        <button class="d-subtab ${_proteinSubtab==='shop'?'on':''}"  data-st="shop">Shop</button>
+        <button class="d-subtab ${_proteinSubtab==='rules'?'on':''}" data-st="rules">Rules</button>
+      </div>`;
 
     const rerender = () => {
       const checked = loadProteinChecked(dateKey);
-      const notes   = loadProteinNotes(dateKey);
+      const notes   = migrateNotes(loadProteinNotes(dateKey));
+      let body;
+      if      (_proteinSubtab === 'today') body = renderTodayView(plan, target, dow, dateKey, checked, notes);
+      else if (_proteinSubtab === 'week')  body = renderWeekView();
+      else if (_proteinSubtab === 'shop')  body = renderShopView();
+      else                                  body = renderRulesView();
 
-      // Use override protein when available & meal is checked
-      const getProtein = (m) => (checked.includes(m.id) && notes[m.id]) ? notes[m.id].protein : m.protein;
-      const eaten  = plan.meals.filter(m => checked.includes(m.id)).reduce((s, m) => s + getProtein(m), 0);
-      const pct    = Math.min(100, Math.round(eaten / plan.target * 100));
-      const over   = eaten >= plan.target;
+      root.innerHTML = subtabs + `<div class="d-body">${body}</div>`;
 
-      const historyHTML = renderDietHistorySection();
-      root.innerHTML = `
-        <div class="protein-header">
-          <div class="protein-title">${plan.type} · Target: ${plan.target}g</div>
-          <div class="protein-progress"><span class="prot-done">${eaten}g</span><span style="color:var(--muted);font-size:14px;font-weight:600"> / ${plan.target}g</span><span style="font-size:12px;color:var(--muted);font-weight:600;margin-left:8px">${pct}%</span></div>
-          <div class="protein-bar-wrap"><div class="protein-bar ${over ? 'over' : ''}" style="width:${pct}%"></div></div>
-        </div>
-        ${plan.meals.map(m => {
-          const done     = checked.includes(m.id);
-          const note     = notes[m.id];
-          const hasNote  = !!note;
-          const dispProt = hasNote ? note.protein : m.protein;
-          return `<div class="meal-card ${done ? 'checked' : ''} ${hasNote ? 'overridden' : ''}" data-meal="${m.id}">
-            <div class="meal-check">${done ? '✓' : ''}</div>
-            <div class="meal-info">
-              <div class="meal-time">${m.time}</div>
-              <div class="meal-name">${m.label}</div>
-              <div class="meal-detail">${hasNote ? note.text : m.detail}</div>
-              ${hasNote ? `<div class="meal-override-note">Plan: ${m.detail}</div>` : ''}
-            </div>
-            <div class="meal-right">
-              <div class="meal-prot ${hasNote ? 'overridden' : ''}">+${dispProt}g${hasNote ? ' ✎' : ''}</div>
-              ${hasNote ? `<div class="meal-prot-planned">+${m.protein}g</div>` : ''}
-              <button class="meal-edit-btn" data-edit-meal="${m.id}" title="Log what you actually had">✎</button>
-            </div>
-          </div>`;
-        }).join('')}
-        <div style="margin-top:8px">
-          <button class="btn-action primary" id="logDietDayBtn" style="width:100%">Log day</button>
-        </div>
-        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
-          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px">Diet log</div>
-          ${historyHTML}
-        </div>
-      `;
+      // Sub-tab switches
+      root.querySelectorAll('.d-subtab').forEach(b => {
+        b.addEventListener('click', () => { _proteinSubtab = b.dataset.st; rerender(); });
+      });
 
-      // Tap card body → toggle checked
-      root.querySelectorAll('.meal-card').forEach(card => {
+      if (_proteinSubtab !== 'today') return;
+
+      // Tap meal → toggle checked
+      root.querySelectorAll('.d-meal').forEach(card => {
         card.addEventListener('click', (e) => {
-          if (e.target.closest('.meal-edit-btn')) return; // handled separately
-          const id  = card.dataset.meal;
-          let arr   = loadProteinChecked(dateKey);
+          if (e.target.closest('.d-meal-edit')) return;
+          const id = card.dataset.meal;
+          let arr  = loadProteinChecked(dateKey);
           if (arr.includes(id)) arr = arr.filter(x => x !== id);
           else arr.push(id);
           saveProteinChecked(dateKey, arr);
-          haptic();
           rerender();
         });
       });
 
-      // Tap edit button → open note modal
-      root.querySelectorAll('.meal-edit-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const id   = btn.dataset.editMeal;
-          const meal = plan.meals.find(m => m.id === id);
-          const nts  = loadProteinNotes(dateKey);
-          openMealNoteModal(meal, dateKey, nts[id] || null, (result) => {
-            const latestNotes = loadProteinNotes(dateKey);
-            if (result === null) delete latestNotes[id];
-            else latestNotes[id] = result;
-            saveProteinNotes(dateKey, latestNotes);
-            // Also make sure meal is checked when saving an override
-            if (result !== null) {
-              let arr = loadProteinChecked(dateKey);
-              if (!arr.includes(id)) { arr.push(id); saveProteinChecked(dateKey, arr); }
-            }
-            haptic();
-            rerender();
-          });
-        });
-      });
-
-      // Log day button
-      const logBtn = root.querySelector('#logDietDayBtn');
-      if (logBtn) {
-        logBtn.addEventListener('click', () => {
-          const latestChecked = loadProteinChecked(dateKey);
-          const latestNotes   = loadProteinNotes(dateKey);
-          logDietDay(dateKey, plan, latestChecked, latestNotes);
-          haptic();
-          toast('Day logged ✓');
-          rerender();
-        });
-      }
-
-      // Diet history — month headers toggle
-      root.querySelectorAll('[data-diet-month]').forEach(el => {
-        el.querySelector('.history-month-header').addEventListener('click', () => el.classList.toggle('open'));
-      });
-      // Diet history — session expand
-      root.querySelectorAll('[data-diet-session-id]').forEach(el => {
-        el.addEventListener('click', e => {
-          if (e.target.closest('.diet-session-delete-btn')) return;
-          el.classList.toggle('open');
-        });
-      });
-      // Diet history — delete
-      root.querySelectorAll('.diet-session-delete-btn').forEach(btn => {
+      // Edit a meal (now P + C + F)
+      root.querySelectorAll('[data-edit-meal]').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
-          confirmModal('Delete entry', 'Remove this day from the diet log?', () => {
-            const id = btn.dataset.dietId;
-            const h  = loadDietHistory().filter(x => x.id !== id);
-            saveDietHistory(h);
+          const id = btn.dataset.editMeal;
+          const meal = plan.meals.find(m => m.id === id);
+          if (!meal) return;
+          openMealOverrideModal(meal, dateKey, () => {
+            // After save: ensure meal is checked
+            let arr = loadProteinChecked(dateKey);
+            if (!arr.includes(id)) { arr.push(id); saveProteinChecked(dateKey, arr); }
             rerender();
-            toast('Entry deleted');
           });
         });
       });
+
+      // Log day
+      const logBtn = document.getElementById('logDietDayBtn');
+      if (logBtn) logBtn.addEventListener('click', () => {
+        const totals = getTotals(plan, loadProteinChecked(dateKey), migrateNotes(loadProteinNotes(dateKey)));
+        const entry = { id: 'd_' + Date.now(), date: dateKey, dow, type: plan.type, target, totals };
+        const hist = loadJSON('diet_history_v1', []);
+        hist.push(entry);
+        saveJSON('diet_history_v1', hist);
+        toast('Day logged ✓');
+        rerender();
+      });
     };
+
     rerender();
   }
+
 
   // ── Midnight date refresh ─────────────────────────────────────────────────
   function scheduleMidnightRefresh() {
