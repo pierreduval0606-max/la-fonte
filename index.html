@@ -409,6 +409,29 @@
   font-size: 16px; font-family: inherit;
 }
 
+
+.preview-banner {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(212,255,58,0.08); border: 1px solid var(--accent);
+  border-radius: 10px; padding: 10px 12px; margin-bottom: 12px;
+}
+.preview-back {
+  background: transparent; border: 1px solid var(--accent); color: var(--accent);
+  padding: 6px 10px; border-radius: 6px; font-size: 11px; letter-spacing: 0.1em;
+  font-family: inherit; cursor: pointer; font-weight: 600;
+}
+.preview-back:active { background: var(--accent); color: #000; }
+.preview-banner-text { flex: 1; }
+.preview-banner-day {
+  font-size: 14px; font-weight: 600; letter-spacing: 0.04em; color: var(--text);
+  text-transform: uppercase;
+}
+.preview-banner-sub {
+  font-size: 10px; color: var(--muted); letter-spacing: 0.06em; margin-top: 2px;
+}
+.d-week-row { cursor: pointer; transition: border-color 0.12s, transform 0.12s; }
+.d-week-row:active { transform: scale(0.99); border-color: var(--accent); }
+
 </style>
 </head>
 <body>
@@ -694,18 +717,15 @@
     if (!el) return;
     el.classList.remove('ready');
     el.classList.add('active');
-    _annReady();
     const tick = () => {
       if (!_restEndsAt) return;
       const remaining = Math.max(0, Math.ceil((_restEndsAt - Date.now()) / 1000));
-      if (remaining === 10 && !_restCalloutsFired[10]) { _restCalloutsFired[10] = true; _annTenSec(); }
       if (remaining === 0) {
         if (!_restAlerted) {
           _restAlerted = true;
           el.textContent = 'NEXT SET';
           el.classList.add('ready');
           if (navigator.vibrate) try { navigator.vibrate([220, 80, 220, 80, 320]); } catch(e) {}
-          _annGo();
           clearInterval(_restInterval);
           setTimeout(() => {
             const cur = document.getElementById('restChrono');
@@ -815,6 +835,7 @@
   const CARB_AVOID_ON_CUT = ['pasta', 'fries', 'fried rice', 'sugary drinks', 'pastry', 'cookies', 'free oils beyond plan'];
 
   let _proteinSubtab = 'today';
+  let _viewedDay = null;
 
 
   // ── Toast ─────────────────────────────────────────────────────────────────
@@ -1947,9 +1968,21 @@
 
   function renderProtein() {
     const root = document.getElementById('mainContent');
-    const today = new Date();
-    const dow = today.getDay();
+    const realToday = new Date();
+    const realDow   = realToday.getDay();
+    let viewDow, today;
+    if (_viewedDay !== null && _viewedDay !== undefined) {
+      viewDow = _viewedDay;
+      const offset = (viewDow - realDow + 7) % 7;
+      today = new Date(realToday);
+      today.setDate(today.getDate() + offset);
+    } else {
+      viewDow = realDow;
+      today = realToday;
+    }
+    const dow = viewDow;
     const dateKey = today.toISOString().slice(0, 10);
+    const isPreview = (_viewedDay !== null && _viewedDay !== undefined && _viewedDay !== realDow);
     const plan = PROTEIN_PLANS[dow];
     const target = (plan.target && typeof plan.target === 'object') ? plan.target : { p: plan.target || 0, c: 0, f: 0 };
 
@@ -2001,7 +2034,7 @@
       return 'Gym day — carbs front-loaded around training. Sweet potato is your friend.';
     }
 
-    function renderTodayView(plan, target, dow, dateKey, checked, notes) {
+    function renderTodayView(plan, target, dow, dateKey, checked, notes, isPreview, dateObj) {
       const eaten = getTotals(plan, checked, notes);
       const dateStr = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
       const shift = loadDietShift(dateKey);
@@ -2051,11 +2084,21 @@
           </div>
           <div class="d-meal-actions">
             <div class="d-meal-check">${done ? '✓' : ''}</div>
-            <button class="d-meal-swap" data-edit-meal="${m.id}" title="Swap or edit this meal">✎</button>
+            ${isPreview ? "" : `<button class="d-meal-swap" data-edit-meal="${m.id}" title="Swap or edit this meal">✎</button>`}
           </div>
         </div>`;
       }).join('');
+      const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const previewBanner = isPreview ? `
+        <div class="preview-banner">
+          <button class="preview-back" data-back-week="1">‹ BACK</button>
+          <div class="preview-banner-text">
+            <div class="preview-banner-day">${dayNames[dow]}</div>
+            <div class="preview-banner-sub">${dateStr} · preview · prep ahead</div>
+          </div>
+        </div>` : '';
       return `
+        ${previewBanner}
         <div class="d-day-header">
           <div class="d-day-type">${plan.type}</div>
           <div class="d-day-date">${dateStr}</div>
@@ -2065,7 +2108,7 @@
         ${shiftBarHTML}
         <div class="d-meals">${mealsHTML}</div>
         <div class="d-coach-tip"><div class="d-coach-tip-label">Tip</div><div>${getCoachTip(dow)}</div></div>
-        <button class="btn-action primary" id="logDietDayBtn" style="width:100%;margin-top:14px">Log day</button>
+        ${isPreview ? "" : `<button class="btn-action primary" id="logDietDayBtn" style="width:100%;margin-top:14px">Log day</button>`}
         <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
           <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px">Diet log</div>
           ${renderDietHistorySection()}
@@ -2079,10 +2122,10 @@
         const p = PROTEIN_PLANS[d];
         const t = (p.target && typeof p.target === 'object') ? p.target : { p: p.target || 0, c: 0, f: 0 };
         const isToday = d === dow;
-        return `<div class="d-week-row ${isToday ? 'on' : ''}">
-          <div class="d-week-day">${dayLabels[d]}</div>
+        return `<div class="d-week-row ${isToday ? 'on' : ''}" data-view-dow="${d}">
+          <div class="d-week-day">${dayLabels[d]}${isToday ? '<div style="font-size:9px;color:var(--accent);font-weight:400;letter-spacing:0.08em;margin-top:2px">TODAY</div>' : ''}</div>
           <div class="d-week-type">${p.type}</div>
-          <div class="d-week-mac"><span>${t.p}P</span><span>${t.c}C</span><span>${t.f}F</span></div>
+          <div class="d-week-mac"><span style="font-size:18px;color:var(--muted)">›</span></div>
         </div>`;
       }).join('');
       return `<div class="d-week-wrap">
@@ -2131,7 +2174,7 @@
           <button class="d-subtab ${_proteinSubtab==='rules'?'on':''}" data-st="rules">Rules</button>
         </div>`;
       let body;
-      if      (_proteinSubtab === 'today') body = renderTodayView(plan, target, dow, dateKey, checked, notes);
+      if      (_proteinSubtab === 'today') body = renderTodayView(plan, target, dow, dateKey, checked, notes, isPreview, today);
       else if (_proteinSubtab === 'week')  body = renderWeekView();
       else if (_proteinSubtab === 'shop')  body = renderShopView();
       else                                  body = renderRulesView();
@@ -2140,7 +2183,30 @@
 
       // Sub-tab switches
       root.querySelectorAll('.d-subtab').forEach(b => {
-        b.addEventListener('click', () => { _proteinSubtab = b.dataset.st; rerender(); });
+        b.addEventListener('click', () => {
+          _proteinSubtab = b.dataset.st;
+          if (b.dataset.st !== 'today') _viewedDay = null;
+          rerender();
+        });
+      });
+
+      // Week row → drill into that day as preview
+      root.querySelectorAll('[data-view-dow]').forEach(row => {
+        row.addEventListener('click', () => {
+          const d = parseInt(row.dataset.viewDow, 10);
+          if (isNaN(d)) return;
+          _viewedDay = d;
+          _proteinSubtab = 'today';
+          rerender();
+        });
+      });
+
+      // Back-to-week button on preview
+      const backBtn = root.querySelector('[data-back-week]');
+      if (backBtn) backBtn.addEventListener('click', () => {
+        _viewedDay = null;
+        _proteinSubtab = 'week';
+        rerender();
       });
 
       if (_proteinSubtab !== 'today') return;
