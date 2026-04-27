@@ -464,7 +464,7 @@
       <div class="splash-card-hint">workouts · sets · PRs</div>
     </div>
     <div class="splash-card" data-pick-mode="diet">
-      <div class="splash-card-icon">◉</div>
+      <div class="splash-card-icon" style="color:var(--accent)"><svg viewBox="0 0 64 64" width="42" height="42" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="20"/><circle cx="32" cy="32" r="12" stroke-width="1.5"/><path d="M10 8 L10 22 M7 8 L7 14 M13 8 L13 14 M10 22 L10 36"/><path d="M54 8 L54 22 Q54 26 51 26 L51 36"/></svg></div>
       <div class="splash-card-name">DIET</div>
       <div class="splash-card-hint">meals · macros · shop</div>
     </div>
@@ -1984,6 +1984,13 @@
     const dateKey = today.toISOString().slice(0, 10);
     const isPreview = (_viewedDay !== null && _viewedDay !== undefined && _viewedDay !== realDow);
     const plan = PROTEIN_PLANS[dow];
+    if (!plan) {
+      root.innerHTML = '<div style="padding:20px;color:#ff6b6b">No diet plan for day ' + dow + ' — resetting.</div>';
+      _viewedDay = null;
+      _proteinSubtab = 'today';
+      setTimeout(() => renderProtein(), 50);
+      return;
+    }
     const target = (plan.target && typeof plan.target === 'object') ? plan.target : { p: plan.target || 0, c: 0, f: 0 };
 
     // Migrate per-meal note shape: legacy {text, protein} → {text, p, c, f}
@@ -2174,10 +2181,18 @@
           <button class="d-subtab ${_proteinSubtab==='rules'?'on':''}" data-st="rules">Rules</button>
         </div>`;
       let body;
-      if      (_proteinSubtab === 'today') body = renderTodayView(plan, target, dow, dateKey, checked, notes, isPreview, today);
-      else if (_proteinSubtab === 'week')  body = renderWeekView();
-      else if (_proteinSubtab === 'shop')  body = renderShopView();
-      else                                  body = renderRulesView();
+      try {
+        if      (_proteinSubtab === 'today') body = renderTodayView(plan, target, dow, dateKey, checked, notes, isPreview, today);
+        else if (_proteinSubtab === 'week')  body = renderWeekView();
+        else if (_proteinSubtab === 'shop')  body = renderShopView();
+        else                                  body = renderRulesView();
+      } catch (err) {
+        body = `<div style="padding:20px;color:#ff6b6b;background:#1a0a0a;border:1px solid #ff6b6b;border-radius:8px;font-size:13px;line-height:1.5">
+          <div style="font-weight:600;margin-bottom:8px">Diet render error</div>
+          <div style="font-family:monospace;font-size:11px;word-break:break-all">${(err && err.message ? err.message : String(err)).replace(/[<>]/g,'')}</div>
+          <button class="btn-action" style="margin-top:12px" onclick="try{localStorage.removeItem('lafonte_mode');localStorage.removeItem('session_start_v1:'+new Date().toISOString().slice(0,10));}catch(e){};location.reload()">Reset & reload</button>
+        </div>`;
+      }
 
       root.innerHTML = subtabs + `<div class="d-body">${body}</div>`;
 
