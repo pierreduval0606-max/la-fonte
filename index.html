@@ -1972,30 +1972,37 @@
 
   function renderProtein() {
     const root = document.getElementById('mainContent');
-    const realToday = new Date();
-    const realDow   = realToday.getDay();
-    let viewDow, today;
-    if (_viewedDay !== null && _viewedDay !== undefined) {
-      viewDow = _viewedDay;
-      const offset = (viewDow - realDow + 7) % 7;
-      today = new Date(realToday);
-      today.setDate(today.getDate() + offset);
-    } else {
-      viewDow = realDow;
-      today = realToday;
+    // Day-resolution must run on EVERY rerender so _viewedDay changes take effect.
+    function resolveDay() {
+      const realToday = new Date();
+      const realDow   = realToday.getDay();
+      let viewDow, today;
+      if (_viewedDay !== null && _viewedDay !== undefined) {
+        viewDow = _viewedDay;
+        const offset = (viewDow - realDow + 7) % 7;
+        today = new Date(realToday);
+        today.setDate(today.getDate() + offset);
+      } else {
+        viewDow = realDow;
+        today = realToday;
+      }
+      const dow = viewDow;
+      const dateKey = today.toISOString().slice(0, 10);
+      const isPreview = (_viewedDay !== null && _viewedDay !== undefined && _viewedDay !== realDow);
+      const plan = PROTEIN_PLANS[dow];
+      const target = (plan && plan.target && typeof plan.target === 'object') ? plan.target : { p: (plan && plan.target) || 0, c: 0, f: 0 };
+      return { realDow, today, dow, dateKey, isPreview, plan, target };
     }
-    const dow = viewDow;
-    const dateKey = today.toISOString().slice(0, 10);
-    const isPreview = (_viewedDay !== null && _viewedDay !== undefined && _viewedDay !== realDow);
-    const plan = PROTEIN_PLANS[dow];
-    if (!plan) {
-      root.innerHTML = '<div style="padding:20px;color:#ff6b6b">No diet plan for day ' + dow + ' — resetting.</div>';
+    let ctx = resolveDay();
+    if (!ctx.plan) {
+      root.innerHTML = '<div style="padding:20px;color:#ff6b6b">No diet plan for day ' + ctx.dow + ' — resetting.</div>';
       _viewedDay = null;
       _proteinSubtab = 'today';
       setTimeout(() => renderProtein(), 50);
       return;
     }
-    const target = (plan.target && typeof plan.target === 'object') ? plan.target : { p: plan.target || 0, c: 0, f: 0 };
+    // Use let-bound aliases so we can refresh them on each rerender.
+    let today = ctx.today, dow = ctx.dow, dateKey = ctx.dateKey, isPreview = ctx.isPreview, plan = ctx.plan, target = ctx.target;
 
     // Migrate per-meal note shape: legacy {text, protein} → {text, p, c, f}
     function migrateNotes(obj) {
@@ -2175,6 +2182,8 @@
     }
 
     const rerender = () => {
+      const c2 = resolveDay();
+      today = c2.today; dow = c2.dow; dateKey = c2.dateKey; isPreview = c2.isPreview; plan = c2.plan; target = c2.target;
       const checked = loadProteinChecked(dateKey);
       const notes   = migrateNotes(loadProteinNotes(dateKey));
       const subtabs = `
