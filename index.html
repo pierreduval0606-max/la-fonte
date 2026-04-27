@@ -2091,7 +2091,7 @@
       const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       const previewBanner = isPreview ? `
         <div class="preview-banner">
-          <button class="preview-back" data-back-week="1">‹ BACK</button>
+          <button class="preview-back" type="button" data-back-week="1" style="touch-action:manipulation">‹ BACK</button>
           <div class="preview-banner-text">
             <div class="preview-banner-day">${dayNames[dow]}</div>
             <div class="preview-banner-sub">${dateStr} · preview · prep ahead</div>
@@ -2122,7 +2122,7 @@
         const p = PROTEIN_PLANS[d];
         const t = (p.target && typeof p.target === 'object') ? p.target : { p: p.target || 0, c: 0, f: 0 };
         const isToday = d === dow;
-        return `<div class="d-week-row ${isToday ? 'on' : ''}" data-view-dow="${d}">
+        return `<div class="d-week-row ${isToday ? 'on' : ''}" data-view-dow="${d}" role="button" tabindex="0" style="touch-action:manipulation">
           <div class="d-week-day">${dayLabels[d]}${isToday ? '<div style="font-size:9px;color:var(--accent);font-weight:400;letter-spacing:0.08em;margin-top:2px">TODAY</div>' : ''}</div>
           <div class="d-week-type">${p.type}</div>
           <div class="d-week-mac"><span style="font-size:18px;color:var(--muted)">›</span></div>
@@ -2190,24 +2190,29 @@
         });
       });
 
-      // Week row → drill into that day as preview
-      root.querySelectorAll('[data-view-dow]').forEach(row => {
-        row.addEventListener('click', () => {
-          const d = parseInt(row.dataset.viewDow, 10);
-          if (isNaN(d)) return;
-          _viewedDay = d;
-          _proteinSubtab = 'today';
-          rerender();
+      // Week row + back button — delegated handler, set up only once on root.
+      // Per-element listeners didn't fire reliably on mobile (touch/grid-cell quirks).
+      if (!root._dietDelegated) {
+        root._dietDelegated = true;
+        root.addEventListener('click', (e) => {
+          const row = e.target.closest('[data-view-dow]');
+          if (row && root.contains(row)) {
+            const d = parseInt(row.dataset.viewDow, 10);
+            if (!isNaN(d)) {
+              _viewedDay = d;
+              _proteinSubtab = 'today';
+              rerender();
+              return;
+            }
+          }
+          const back = e.target.closest('[data-back-week]');
+          if (back && root.contains(back)) {
+            _viewedDay = null;
+            _proteinSubtab = 'week';
+            rerender();
+          }
         });
-      });
-
-      // Back-to-week button on preview
-      const backBtn = root.querySelector('[data-back-week]');
-      if (backBtn) backBtn.addEventListener('click', () => {
-        _viewedDay = null;
-        _proteinSubtab = 'week';
-        rerender();
-      });
+      }
 
       if (_proteinSubtab !== 'today') return;
 
