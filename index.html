@@ -2120,17 +2120,16 @@
       </div>`;
     }
 
-    const subtabs = `
-      <div class="d-subtabs">
-        <button class="d-subtab ${_proteinSubtab==='today'?'on':''}" data-st="today">Today</button>
-        <button class="d-subtab ${_proteinSubtab==='week'?'on':''}"  data-st="week">Week</button>
-        <button class="d-subtab ${_proteinSubtab==='shop'?'on':''}"  data-st="shop">Shop</button>
-        <button class="d-subtab ${_proteinSubtab==='rules'?'on':''}" data-st="rules">Rules</button>
-      </div>`;
-
     const rerender = () => {
       const checked = loadProteinChecked(dateKey);
       const notes   = migrateNotes(loadProteinNotes(dateKey));
+      const subtabs = `
+        <div class="d-subtabs">
+          <button class="d-subtab ${_proteinSubtab==='today'?'on':''}" data-st="today">Today</button>
+          <button class="d-subtab ${_proteinSubtab==='week'?'on':''}"  data-st="week">Week</button>
+          <button class="d-subtab ${_proteinSubtab==='shop'?'on':''}"  data-st="shop">Shop</button>
+          <button class="d-subtab ${_proteinSubtab==='rules'?'on':''}" data-st="rules">Rules</button>
+        </div>`;
       let body;
       if      (_proteinSubtab === 'today') body = renderTodayView(plan, target, dow, dateKey, checked, notes);
       else if (_proteinSubtab === 'week')  body = renderWeekView();
@@ -2348,8 +2347,8 @@
         (loadJSON('session_start_v1:' + dateKey, null) != null ? '<button class="btn-action" id="resetSess" style="flex:1">Reset</button>' : '') +
         '<button class="btn-action primary" id="saveSess" style="flex:2">Save</button>' +
       '</div>';
-    function close() { document.getElementById('modal').classList.remove('on'); }
-    document.getElementById('modal').classList.add('on');
+    function close() { document.getElementById('modal').classList.remove('show'); }
+    document.getElementById('modal').classList.add('show');
     document.getElementById('modalClose').onclick = close;
     document.getElementById('cancelSess').onclick = close;
     const resetBtn = document.getElementById('resetSess');
@@ -2438,8 +2437,8 @@
         closeMealModal(); if (onSave) onSave();
       });
     }
-    function closeMealModal() { document.getElementById('modal').classList.remove('on'); }
-    document.getElementById('modal').classList.add('on');
+    function closeMealModal() { document.getElementById('modal').classList.remove('show'); }
+    document.getElementById('modal').classList.add('show');
     document.getElementById('modalClose').onclick = closeMealModal;
     render();
   }
