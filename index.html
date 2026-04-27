@@ -329,12 +329,54 @@
     input, textarea, select { font-size: 16px; }
     .weight-input { font-size: 20px; }
     .notes-input { font-size: 14px; }
-  </style>
+  
+.app[data-mode="splash"] .day-tabs,
+.app[data-mode="splash"] .header-right .chrono,
+.app[data-mode="splash"] .tagline,
+.app[data-mode="splash"] #mainContent { display: none; }
+.app[data-mode="gym"] .day-tab[data-day="protein"] { display: none; }
+.app[data-mode="diet"] .day-tab:not([data-day="protein"]) { display: none; }
+.app[data-mode="diet"] .day-tab[data-day="protein"] { display: none; }
+.splash-screen { display: none; padding: 32px 16px 40px; flex-direction: column; gap: 16px; }
+.app[data-mode="splash"] .splash-screen { display: flex; }
+.splash-title { font-family: 'Times New Roman', serif; font-style: italic; font-size: 64px; line-height: 1; text-align: center; color: var(--accent); margin: 28px 0 4px; }
+.splash-sub { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 36px; }
+.splash-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 26px 20px; text-align: center; cursor: pointer; transition: transform 0.12s, border-color 0.12s; }
+.splash-card:active { transform: scale(0.98); border-color: var(--accent); }
+.splash-card-icon { font-size: 38px; margin-bottom: 10px; line-height: 1; }
+.splash-card-name { font-size: 18px; font-weight: 600; letter-spacing: 0.04em; }
+.splash-card-hint { font-size: 11px; color: var(--muted); margin-top: 6px; letter-spacing: 0.08em; }
+.back-splash { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 4px 10px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; margin-right: 6px; }
+.back-splash:active { background: var(--border); }
+.shift-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; margin-bottom: 12px; font-size: 11px; }
+.shift-bar-label { color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-right: 4px; }
+.shift-btn { background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 5px 9px; font-size: 11px; cursor: pointer; }
+.shift-btn:active { background: var(--border); }
+.shift-btn.on { background: var(--accent); color: #000; border-color: var(--accent); }
+.shift-status { color: var(--accent); font-weight: 600; margin-left: auto; }
+.food-picker { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+.food-picker-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.food-picker-row label { font-size: 11px; color: var(--muted); min-width: 56px; }
+.food-picker select, .food-picker input[type="number"], .food-picker input[type="text"] { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 14px; }
+.food-calc { background: var(--bg); border-radius: 6px; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; margin-top: 4px; }
+.food-calc-row { display: flex; justify-content: space-around; gap: 8px; }
+.food-calc-cell { display: flex; flex-direction: column; }
+.food-calc-num { font-size: 18px; color: var(--accent); }
+.food-calc-lbl { font-size: 9px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+.food-tab-row { display: flex; gap: 4px; margin-bottom: 10px; }
+.food-tab { flex: 1; background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 4px; font-size: 11px; border-radius: 6px; cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase; }
+.food-tab.on { background: var(--accent); color: #000; border-color: var(--accent); }
+.d-meal-actions { display: flex; flex-direction: column; gap: 4px; align-items: center; }
+.d-meal-swap { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 4px 7px; font-size: 13px; cursor: pointer; line-height: 1; min-height: 24px; }
+.d-meal-swap:active { background: var(--border); color: var(--text); }
+
+</style>
 </head>
 <body>
 
-<div class="app">
+<div class="app" id="app" data-mode="splash">
   <div class="header">
+    <button class="back-splash" id="backSplashBtn" style="display:none">‹ MENU</button>
     <div class="logo">La Fonte.</div>
     <div class="header-right">
       <div class="date" id="date"></div>
@@ -351,6 +393,20 @@
     <button class="day-tab protein-tab" data-day="protein">Diet</button>
   </div>
   <div id="mainContent"></div>
+  <div class="splash-screen" id="splashScreen">
+    <div class="splash-title">Lf</div>
+    <div class="splash-sub">choose your side</div>
+    <div class="splash-card" data-pick-mode="gym">
+      <div class="splash-card-icon">⛏</div>
+      <div class="splash-card-name">GYM</div>
+      <div class="splash-card-hint">workouts · sets · PRs</div>
+    </div>
+    <div class="splash-card" data-pick-mode="diet">
+      <div class="splash-card-icon">◉</div>
+      <div class="splash-card-name">DIET</div>
+      <div class="splash-card-hint">meals · macros · shop</div>
+    </div>
+  </div>
 </div>
 
 <div class="modal-backdrop" id="modal">
@@ -522,38 +578,88 @@
   let _restInterval = null;
   let _restEndsAt = null;
   let _restAlerted = false;
-  function _playBeep() {
+  // ── v3 Audio: voice + tones (Street Fighter vibe) ─────────────────────
+  let _audioOn = (function() { try { const v = localStorage.getItem('audio_v1'); return v === null ? true : v === 'true'; } catch { return true; } })();
+  function setAudio(on) { _audioOn = on; try { localStorage.setItem('audio_v1', String(on)); } catch {} }
+  let _ac = null;
+  function _ctx() {
+    if (_audioOn === false) return null;
+    try { if (!_ac || _ac.state === 'closed') _ac = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch { return null; }
+    if (_ac.state === 'suspended') _ac.resume().catch(() => {});
+    return _ac;
+  }
+  function _tone(freq, dur, type, vol) {
+    const ac = _ctx(); if (!ac) return;
     try {
-      const ac = new (window.AudioContext || window.webkitAudioContext)();
       const o = ac.createOscillator(), g = ac.createGain();
-      o.type = 'sine'; o.frequency.value = 880;
+      o.type = type || 'sine'; o.frequency.value = freq;
       g.gain.setValueAtTime(0.001, ac.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.55);
+      g.gain.exponentialRampToValueAtTime(vol || 0.5, ac.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
       o.connect(g); g.connect(ac.destination);
-      o.start(); o.stop(ac.currentTime + 0.6);
-      setTimeout(() => ac.close(), 800);
+      o.start(); o.stop(ac.currentTime + dur + 0.05);
     } catch(e) {}
   }
+  function _playBeep() { _tone(880, 0.55, 'sine', 0.5); }
+  function _playMidBeep() { _tone(660, 0.35, 'sine', 0.45); }
+  function _playRisingBeep() { _tone(520, 0.18, 'square', 0.4); setTimeout(() => _tone(720, 0.18, 'square', 0.4), 200); }
+  function _playTick() { _tone(1200, 0.1, 'square', 0.55); }
+  function _playHorn() {
+    const ac = _ctx(); if (!ac) return;
+    try {
+      [180, 270, 360].forEach((f, i) => {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.type = 'sawtooth'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.001, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.4, ac.currentTime + 0.04);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.95);
+        o.connect(g); g.connect(ac.destination);
+        o.start(ac.currentTime + i * 0.04); o.stop(ac.currentTime + 1.05);
+      });
+    } catch(e) {}
+  }
+  function _speak(phrase, opts) {
+    if (_audioOn === false) return;
+    try {
+      if (!('speechSynthesis' in window)) return;
+      try { window.speechSynthesis.cancel(); } catch {}
+      const u = new SpeechSynthesisUtterance(phrase);
+      u.rate = (opts && opts.rate) || 1.05;
+      u.pitch = (opts && opts.pitch) || 1.0;
+      u.volume = (opts && opts.volume) || 1.0;
+      window.speechSynthesis.speak(u);
+    } catch(e) {}
+  }
+  function _annReady() { _playRisingBeep(); _speak('Ready', { rate: 1.1, pitch: 1.05 }); }
+  function _annGo() { _playHorn(); setTimeout(() => _speak('Go!', { rate: 1.15, pitch: 1.15, volume: 1.0 }), 80); }
+  let _restCalloutsFired = {};
   function startRestChrono(restSec) {
     restSec = Math.max(5, parseInt(restSec || 90, 10));
     clearInterval(_restInterval);
     _restEndsAt = Date.now() + restSec * 1000;
     _restAlerted = false;
+    _restCalloutsFired = {};
     const el = document.getElementById('restChrono');
     if (!el) return;
     el.classList.remove('ready');
     el.classList.add('active');
+    _annReady();
     const tick = () => {
       if (!_restEndsAt) return;
       const remaining = Math.max(0, Math.ceil((_restEndsAt - Date.now()) / 1000));
+      if (remaining === 30 && restSec >= 60 && !_restCalloutsFired[30]) { _restCalloutsFired[30] = true; _playMidBeep(); }
+      else if (remaining === 10 && !_restCalloutsFired[10]) { _restCalloutsFired[10] = true; _playRisingBeep(); _speak('Ten seconds', { rate: 1.1 }); }
+      else if (remaining === 3 && !_restCalloutsFired[3]) { _restCalloutsFired[3] = true; _playTick(); }
+      else if (remaining === 2 && !_restCalloutsFired[2]) { _restCalloutsFired[2] = true; _playTick(); }
+      else if (remaining === 1 && !_restCalloutsFired[1]) { _restCalloutsFired[1] = true; _playTick(); }
       if (remaining === 0) {
         if (!_restAlerted) {
           _restAlerted = true;
-          el.textContent = 'Ready ✓';
+          el.textContent = 'GO!';
           el.classList.add('ready');
-          if (navigator.vibrate) try { navigator.vibrate([180, 90, 180, 90, 180]); } catch(e) {}
-          _playBeep();
+          if (navigator.vibrate) try { navigator.vibrate([220, 80, 220, 80, 320]); } catch(e) {}
+          _annGo();
           clearInterval(_restInterval);
           setTimeout(() => {
             const cur = document.getElementById('restChrono');
@@ -1852,14 +1958,25 @@
     function renderTodayView(plan, target, dow, dateKey, checked, notes) {
       const eaten = getTotals(plan, checked, notes);
       const dateStr = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const shift = loadDietShift(dateKey);
+      const shiftBarHTML = `
+        <div class="shift-bar">
+          <span class="shift-bar-label">Shift</span>
+          <button class="shift-btn ${shift===0?'on':''}" data-shift="0">0</button>
+          <button class="shift-btn ${shift===1?'on':''}" data-shift="1">+1h</button>
+          <button class="shift-btn ${shift===2?'on':''}" data-shift="2">+2h</button>
+          <button class="shift-btn ${shift===3?'on':''}" data-shift="3">+3h</button>
+          ${shift !== 0 ? `<span class="shift-status">${shift>0?'+':''}${shift}h</span>` : ''}
+        </div>`;
       const mealsHTML = plan.meals.map(m => {
         const done = checked.includes(m.id);
         const note = notes[m.id];
         const dispP = note ? note.p : m.p;
         const dispC = note ? note.c : m.c;
         const dispF = note ? note.f : m.f;
+        const shiftedTime = shiftMealTime(m.time, shift);
         return `<div class="d-meal ${done ? 'done' : ''} ${note ? 'over' : ''}" data-meal="${m.id}">
-          <div class="d-meal-time">${m.time}</div>
+          <div class="d-meal-time">${shiftedTime}</div>
           <div class="d-meal-body">
             <div class="d-meal-name">${m.label}</div>
             <div class="d-meal-detail">${note ? note.text : m.detail}</div>
@@ -1868,7 +1985,7 @@
           </div>
           <div class="d-meal-actions">
             <div class="d-meal-check">${done ? '✓' : ''}</div>
-            <button class="d-meal-edit" data-edit-meal="${m.id}" title="Log what you actually had">✎</button>
+            <button class="d-meal-swap" data-edit-meal="${m.id}" title="Swap or edit this meal">✎</button>
           </div>
         </div>`;
       }).join('');
@@ -1879,6 +1996,7 @@
         </div>
         ${plan.note ? `<div class="d-coach-tip"><div class="d-coach-tip-label">Coach</div><div>${plan.note}</div></div>` : ''}
         ${macroBars(eaten, target)}
+        ${shiftBarHTML}
         <div class="d-meals">${mealsHTML}</div>
         <div class="d-coach-tip"><div class="d-coach-tip-label">Tip</div><div>${getCoachTip(dow)}</div></div>
         <button class="btn-action primary" id="logDietDayBtn" style="width:100%;margin-top:14px">Log day</button>
@@ -1962,6 +2080,15 @@
 
       if (_proteinSubtab !== 'today') return;
 
+      // Shift buttons
+      root.querySelectorAll('[data-shift]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const h = parseInt(btn.dataset.shift, 10) || 0;
+          saveDietShift(dateKey, h);
+          rerender();
+        });
+      });
+
       // Tap meal → toggle checked
       root.querySelectorAll('.d-meal').forEach(card => {
         card.addEventListener('click', (e) => {
@@ -2008,6 +2135,150 @@
   }
 
 
+
+  // ── v3: Diet meal-time shift (per-day) ────────────────────────────────
+  function loadDietShift(dateKey) { return parseInt(loadJSON('diet_shift_v1:' + dateKey, 0), 10) || 0; }
+  function saveDietShift(dateKey, hours) { saveJSON('diet_shift_v1:' + dateKey, hours); }
+  function shiftMealTime(timeStr, hours) {
+    if (!hours) return timeStr;
+    const m = String(timeStr || '').match(/^(\d{1,2}):(\d{2})/);
+    if (!m) return timeStr;
+    let h = parseInt(m[1], 10) + hours;
+    h = ((h % 24) + 24) % 24;
+    return h + ':' + m[2];
+  }
+
+  // ── v3: Food database (per 100g unless noted) ─────────────────────────
+  const FOOD_DB = [
+    { id: 'chicken_breast', name: 'Chicken breast (cooked)',  p: 31.0, c: 0,    f: 3.6 },
+    { id: 'chicken_thigh',  name: 'Chicken thigh (cooked)',   p: 24.0, c: 0,    f: 8.0 },
+    { id: 'salmon',         name: 'Salmon (cooked)',          p: 25.0, c: 0,    f: 13.0 },
+    { id: 'tuna_can',       name: 'Tuna in water (canned)',   p: 26.0, c: 0,    f: 1.0 },
+    { id: 'cod',            name: 'Cod (cooked)',             p: 22.8, c: 0,    f: 0.9 },
+    { id: 'shrimp',         name: 'Shrimp (cooked)',          p: 24.0, c: 0,    f: 1.0 },
+    { id: 'beef_lean',      name: 'Lean beef (cooked)',       p: 27.0, c: 0,    f: 9.0 },
+    { id: 'pork_loin',      name: 'Pork loin (cooked)',       p: 26.0, c: 0,    f: 7.0 },
+    { id: 'turkey',         name: 'Turkey breast (cooked)',   p: 30.0, c: 0,    f: 1.5 },
+    { id: 'eggs',           name: 'Egg (whole)',              p: 13.0, c: 1.1,  f: 11.0 },
+    { id: 'egg_white',      name: 'Egg white',                p: 11.0, c: 0.7,  f: 0.2 },
+    { id: 'tofu_firm',      name: 'Tofu (firm)',              p: 14.0, c: 2.5,  f: 8.0 },
+    { id: 'tempeh',         name: 'Tempeh',                   p: 19.0, c: 9.0,  f: 11.0 },
+    { id: 'edamame',        name: 'Edamame (cooked)',         p: 11.0, c: 9.0,  f: 5.0 },
+    { id: 'lentils',        name: 'Lentils (cooked)',         p: 9.0,  c: 20.0, f: 0.4 },
+    { id: 'chickpeas',      name: 'Chickpeas (cooked)',       p: 8.9,  c: 27.4, f: 2.6 },
+    { id: 'black_beans',    name: 'Black beans (cooked)',     p: 8.9,  c: 23.7, f: 0.5 },
+    { id: 'kidney_beans',   name: 'Kidney beans (cooked)',    p: 8.7,  c: 22.8, f: 0.5 },
+    { id: 'skyr',           name: 'Skyr 0%',                  p: 11.0, c: 4.0,  f: 0.2 },
+    { id: 'cottage',        name: 'Cottage cheese (low fat)', p: 11.0, c: 3.5,  f: 2.0 },
+    { id: 'greek_yog',      name: 'Greek yogurt 0%',          p: 10.0, c: 4.0,  f: 0.4 },
+    { id: 'milk_semi',      name: 'Semi-skim milk',           p: 3.5,  c: 4.8,  f: 1.5 },
+    { id: 'whey_30g',       name: 'Whey scoop (30g)',         p: 24.0, c: 2.0,  f: 1.5 },
+    { id: 'rice_white',     name: 'White rice (cooked)',      p: 2.7,  c: 28.0, f: 0.3 },
+    { id: 'rice_brown',     name: 'Brown rice (cooked)',      p: 2.6,  c: 23.0, f: 0.9 },
+    { id: 'oats',           name: 'Oats (dry)',               p: 13.5, c: 67.7, f: 6.9 },
+    { id: 'sweet_potato',   name: 'Sweet potato (baked)',     p: 2.0,  c: 20.0, f: 0.1 },
+    { id: 'potato',         name: 'Potato (baked)',           p: 2.0,  c: 21.0, f: 0.1 },
+    { id: 'quinoa',         name: 'Quinoa (cooked)',          p: 4.4,  c: 21.3, f: 1.9 },
+    { id: 'bread_whole',    name: 'Wholegrain bread',         p: 13.0, c: 41.0, f: 4.2 },
+    { id: 'sourdough',      name: 'Sourdough bread',          p: 9.0,  c: 50.0, f: 1.0 },
+    { id: 'banana',         name: 'Banana',                   p: 1.1,  c: 23.0, f: 0.3 },
+    { id: 'apple',          name: 'Apple',                    p: 0.3,  c: 14.0, f: 0.2 },
+    { id: 'berries',        name: 'Mixed berries',            p: 1.0,  c: 12.0, f: 0.4 },
+    { id: 'almonds',        name: 'Almonds',                  p: 21.0, c: 22.0, f: 50.0 },
+    { id: 'walnuts',        name: 'Walnuts',                  p: 15.0, c: 14.0, f: 65.0 },
+    { id: 'peanut_butter',  name: 'Peanut butter',            p: 25.0, c: 20.0, f: 50.0 },
+    { id: 'olive_oil',      name: 'Olive oil',                p: 0,    c: 0,    f: 100.0 },
+    { id: 'avocado',        name: 'Avocado',                  p: 2.0,  c: 9.0,  f: 15.0 },
+    { id: 'cheese',         name: 'Cheese (cheddar-like)',    p: 25.0, c: 1.3,  f: 33.0 }
+  ];
+  function calcMacros(foodId, grams) {
+    const f = FOOD_DB.find(x => x.id === foodId); if (!f) return { p: 0, c: 0, f: 0 };
+    const ratio = grams / 100;
+    return { p: Math.round(f.p * ratio), c: Math.round(f.c * ratio), f: Math.round(f.f * ratio) };
+  }
+
+  // ── v3: Meal override / swap modal ────────────────────────────────────
+  function openMealOverrideModal(meal, dateKey, onSave) {
+    const titleEl = document.getElementById('modalTitle');
+    const bodyEl  = document.getElementById('modalBody');
+    titleEl.textContent = meal.label;
+    const notes = migrateNotes(loadProteinNotes(dateKey));
+    const cur   = notes[meal.id] || { text: meal.detail, p: meal.p, c: meal.c, f: meal.f };
+    let activeTab  = 'pick';
+    let pickedFood = FOOD_DB[0].id;
+    let pickedGrams = 150;
+    let custText = cur.text, custP = cur.p, custC = cur.c, custF = cur.f;
+
+    function render() {
+      const calc = calcMacros(pickedFood, pickedGrams);
+      const food = FOOD_DB.find(f => f.id === pickedFood);
+      const optsHTML = FOOD_DB.map(f => '<option value="' + f.id + '"' + (f.id===pickedFood?' selected':'') + '>' + f.name + '</option>').join('');
+      const safeText = (custText||'').replace(/"/g,'&quot;');
+      const tabPick = activeTab === 'pick';
+      bodyEl.innerHTML =
+        '<div class="food-tab-row">' +
+          '<button class="food-tab ' + (tabPick?'on':'') + '" data-ft="pick">Food picker</button>' +
+          '<button class="food-tab ' + (!tabPick?'on':'') + '" data-ft="custom">Custom</button>' +
+        '</div>' +
+        (tabPick ?
+          '<div class="food-picker">' +
+            '<div class="food-picker-row"><label>Food</label><select id="foodSel">' + optsHTML + '</select></div>' +
+            '<div class="food-picker-row"><label>Grams</label><input type="number" id="foodGrams" min="1" max="2000" step="5" value="' + pickedGrams + '" /></div>' +
+            '<div class="food-calc"><div class="food-calc-row">' +
+              '<div class="food-calc-cell"><span class="food-calc-num">' + calc.p + '</span><span class="food-calc-lbl">Protein</span></div>' +
+              '<div class="food-calc-cell"><span class="food-calc-num">' + calc.c + '</span><span class="food-calc-lbl">Carbs</span></div>' +
+              '<div class="food-calc-cell"><span class="food-calc-num">' + calc.f + '</span><span class="food-calc-lbl">Fat</span></div>' +
+            '</div></div>' +
+            '<div style="font-size:10px;color:var(--muted);margin-top:8px;text-align:center">' + pickedGrams + 'g · ' + food.name + '</div>' +
+          '</div>'
+          :
+          '<div class="food-picker">' +
+            '<div class="food-picker-row" style="flex-direction:column;align-items:stretch"><label style="margin-bottom:4px">What you ate</label><input type="text" id="custText" value="' + safeText + '" /></div>' +
+            '<div class="food-picker-row"><label>Protein</label><input type="number" id="custP" min="0" max="500" value="' + custP + '" /></div>' +
+            '<div class="food-picker-row"><label>Carbs</label><input type="number" id="custC" min="0" max="500" value="' + custC + '" /></div>' +
+            '<div class="food-picker-row"><label>Fat</label><input type="number" id="custF" min="0" max="500" value="' + custF + '" /></div>' +
+          '</div>'
+        ) +
+        '<div style="display:flex;gap:8px;margin-top:14px">' +
+          '<button class="btn-action" id="cancelOver" style="flex:1">Cancel</button>' +
+          (notes[meal.id] ? '<button class="btn-action" id="clearOver" style="flex:1">Reset</button>' : '') +
+          '<button class="btn-action primary" id="saveOver" style="flex:2">Save</button>' +
+        '</div>';
+
+      bodyEl.querySelectorAll('.food-tab').forEach(b => b.addEventListener('click', () => { activeTab = b.dataset.ft; render(); }));
+      const sel = document.getElementById('foodSel');
+      const gr  = document.getElementById('foodGrams');
+      if (sel) sel.addEventListener('change', () => { pickedFood = sel.value; render(); });
+      if (gr)  gr.addEventListener('input', () => { pickedGrams = Math.max(1, parseInt(gr.value, 10) || 0); render(); });
+      const ct = document.getElementById('custText'); if (ct) ct.addEventListener('input', () => { custText = ct.value; });
+      const cp = document.getElementById('custP'); if (cp) cp.addEventListener('input', () => { custP = parseInt(cp.value,10)||0; });
+      const cc = document.getElementById('custC'); if (cc) cc.addEventListener('input', () => { custC = parseInt(cc.value,10)||0; });
+      const cf = document.getElementById('custF'); if (cf) cf.addEventListener('input', () => { custF = parseInt(cf.value,10)||0; });
+      document.getElementById('cancelOver').addEventListener('click', closeMealModal);
+      const clearBtn = document.getElementById('clearOver');
+      if (clearBtn) clearBtn.addEventListener('click', () => {
+        const n = migrateNotes(loadProteinNotes(dateKey)); delete n[meal.id]; saveProteinNotes(dateKey, n);
+        closeMealModal(); if (onSave) onSave();
+      });
+      document.getElementById('saveOver').addEventListener('click', () => {
+        const n = migrateNotes(loadProteinNotes(dateKey));
+        if (activeTab === 'pick') {
+          const c2 = calcMacros(pickedFood, pickedGrams);
+          const food2 = FOOD_DB.find(f => f.id === pickedFood);
+          n[meal.id] = { text: pickedGrams + 'g · ' + food2.name, p: c2.p, c: c2.c, f: c2.f };
+        } else {
+          n[meal.id] = { text: (custText || meal.detail).trim(), p: custP|0, c: custC|0, f: custF|0 };
+        }
+        saveProteinNotes(dateKey, n);
+        closeMealModal(); if (onSave) onSave();
+      });
+    }
+    function closeMealModal() { document.getElementById('modal').classList.remove('on'); }
+    document.getElementById('modal').classList.add('on');
+    document.getElementById('modalClose').onclick = closeMealModal;
+    render();
+  }
+
   // ── Midnight date refresh ─────────────────────────────────────────────────
   function scheduleMidnightRefresh() {
     const now = new Date();
@@ -2020,6 +2291,35 @@
 
   // ── Boot ──────────────────────────────────────────────────────────────────
   document.querySelectorAll('.day-tab').forEach(tab => tab.addEventListener('click', () => switchDay(tab.dataset.day)));
+
+  // ── v3: Splash + mode routing ─────────────────────────────────────────
+  const APP_EL = document.getElementById('app');
+  function setAppMode(mode) {
+    APP_EL.dataset.mode = mode;
+    document.getElementById('backSplashBtn').style.display = (mode === 'splash') ? 'none' : 'inline-block';
+    if (mode === 'splash') {
+      stopRestChrono();
+      try { localStorage.removeItem('lafonte_mode'); } catch {}
+    } else {
+      try { localStorage.setItem('lafonte_mode', mode); } catch {}
+      if (mode === 'gym') {
+        if (currentDay === 'protein') currentDay = 'upper';
+        switchDay(currentDay);
+      } else if (mode === 'diet') {
+        switchDay('protein');
+      }
+    }
+  }
+  document.querySelectorAll('[data-pick-mode]').forEach(c => {
+    c.addEventListener('click', () => setAppMode(c.dataset.pickMode));
+  });
+  document.getElementById('backSplashBtn').addEventListener('click', () => setAppMode('splash'));
+  try {
+    const saved = localStorage.getItem('lafonte_mode');
+    if (saved === 'gym' || saved === 'diet') {
+      setTimeout(() => setAppMode(saved), 0);
+    }
+  } catch {}
   document.getElementById('modalClose').addEventListener('click', closeModal);
   document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
   document.getElementById('date').textContent = fmtDate();
