@@ -432,6 +432,16 @@
 .d-week-row { cursor: pointer; transition: border-color 0.12s, transform 0.12s; }
 .d-week-row:active { transform: scale(0.99); border-color: var(--accent); }
 
+
+.session-total {
+  display: none;
+  font-family: 'SF Mono', ui-monospace, monospace;
+  font-size: 22px; font-weight: 700;
+  color: var(--accent); letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+.session-total.active { display: block; }
+
 </style>
 </head>
 <body>
@@ -618,22 +628,34 @@
   let _chronoInterval = null;
   function startChrono() {
     if (_chronoInterval) return;
-    const el = document.getElementById('chrono');
-    if (!el) return;
     const tick = () => {
       if (!session._startedAt) return;
       const s = Math.floor((Date.now() - session._startedAt) / 1000);
-      el.textContent = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+      const txt = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+      const hdr = document.getElementById('chrono');
+      const big = document.getElementById('sessionTotal');
+      if (hdr) { hdr.textContent = txt; hdr.classList.add('active'); }
+      if (big) { big.textContent = txt; big.classList.add('active'); }
     };
     tick();
-    el.classList.add('active');
     _chronoInterval = setInterval(tick, 1000);
   }
   function stopChrono() {
     clearInterval(_chronoInterval);
     _chronoInterval = null;
-    const el = document.getElementById('chrono');
-    if (el) { el.classList.remove('active'); el.textContent = ''; }
+    const hdr = document.getElementById('chrono');
+    const big = document.getElementById('sessionTotal');
+    if (hdr) { hdr.classList.remove('active'); hdr.textContent = ''; }
+    if (big) { big.classList.remove('active'); big.textContent = ''; }
+  }
+  // Re-render hook: if session is in progress, hydrate the visible big timer immediately
+  function hydrateSessionTotal() {
+    if (!session || !session._startedAt) return;
+    const big = document.getElementById('sessionTotal');
+    if (!big) return;
+    const s = Math.floor((Date.now() - session._startedAt) / 1000);
+    big.textContent = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    big.classList.add('active');
   }
 
   // ── Rest chrono (counts up after each set, resets on next set) ────────────
@@ -1027,6 +1049,7 @@
       <div class="session-banner">
         <div class="session-banner-left">
           <div class="label">${DAY_LABELS[currentDay]}</div>
+          <div class="session-total" id="sessionTotal"></div>
           <div class="progress"><span class="done-count" id="setsDone">0</span><span style="color:var(--muted)"> / <span id="setsTotal">0</span> sets</span><span class="pct" id="sessionPct">0%</span></div>
           <div class="rest-chrono" id="restChrono"></div>
         </div>
@@ -1038,6 +1061,7 @@
     renderExercises();
     document.getElementById('finishBtn').addEventListener('click', finishSession);
     document.getElementById('addBtn').addEventListener('click', openAddModal);
+    hydrateSessionTotal();
   }
 
   function renderExercises() {
